@@ -8,18 +8,16 @@
 using namespace std;
 
 //一些重要函数……
-
-void refreshScreen();//最主要的函数，用于刷新屏幕，显示控件
-//重要：当前只支持简单堆叠，按先后顺序一个控件一行，所以所有的row和column会被忽略
-
+__declspec(dllexport) void __stdcall refreshScreen();//最主要的函数，用于刷新屏幕，显示控件
+	//重要：当前只支持简单堆叠，按先后顺序一个控件一行，所以所有的row和column会被忽
 //数据结构
 
 class basicThing //基本对象
 {
 public:
-	basicThing();
-	~basicThing();
-	string selfDraw();
+	basicThing() {};
+	~basicThing() {};
+	string __stdcall selfDraw() {};
 	
 private:
 	
@@ -28,11 +26,11 @@ private:
 class basicText :public basicThing
 {
 public:
-	basicText(string text)
+	__declspec(dllexport) __stdcall basicText(string text)
 	{
 		selfText = text;
 	}
-	void updateText(string text)
+	__declspec(dllexport) void __stdcall updateText(string text)
 	{
 		selfText = text;
 	}
@@ -47,15 +45,15 @@ private:
 class basicImage:public basicThing
 {
 public:
-	basicImage(vector<string> _imageByLine)
+	__declspec(dllexport) _stdcall basicImage(vector<string> _imageByLine)
 	{
 		imageByline = _imageByLine;
 	}
-	void updateImage(vector<string> _imageByLine)
+	__declspec(dllexport) void __stdcall updateImage(vector<string> _imageByLine)
 	{
 		imageByline = _imageByLine;
 	}
-	string selfDraw()
+    string selfDraw()
 	{
 		string lastString = "";
 		for (auto kv : imageByline)
@@ -72,7 +70,7 @@ private:
 class basicProgressBar :public basicThing
 {
 public:
-	basicProgressBar(int styles,int _length)
+	 __declspec(dllexport) _stdcall basicProgressBar(int styles,int _length)
 	{
 		{};
 		//样式部分：TODO
@@ -80,11 +78,11 @@ public:
 		progress = 0;
 		length = _length;
 	}
-	void updateProgress(int _progress)//范围：0-100
+	__declspec(dllexport) void __stdcall updateProgress(int _progress)//范围：0-100
 	{
 		progress = _progress;
 	}
-	void switchStyle(int styles)
+	__declspec(dllexport) void __stdcall switchStyle(int styles)
 	{
 		//TODO
 	}
@@ -120,22 +118,23 @@ private:
 
 //一些不那么重要的……
 
+
 //1. 文字相关
 
-basicText createText(int row, int column, string text);
-void updateText(basicText& youwant, string text);
+__declspec(dllexport) basicText __stdcall createText(int row, int column, string text);
+__declspec(dllexport) void __stdcall updateText(basicText& youwant, string text);
 
 //2. 图片相关
 
-basicImage createImage(int row, int column, vector<string> image);
-void updateImage(basicImage& youwant,vector<string> image);
+__declspec(dllexport) basicImage __stdcall createImage(int row, int column, vector<string> image);
+__declspec(dllexport) void __stdcall updateImage(basicImage& youwant, vector<string> image);
 
 //3.进度条相关
 
-basicImage createProgressBar(int row, int column);
-void updateProgressBar(basicProgressBar& youwant, int progress);
+__declspec(dllexport) basicProgressBar __stdcall createProgressBar(int row, int column, int length);
+__declspec(dllexport) void __stdcall updateProgressBar(basicProgressBar& youwant, int progress);
 
 //4.通用操作
-
+	
 template<typename T>
-void changeLocation(T& youwant);
+  void changeLocation(T& youwant);

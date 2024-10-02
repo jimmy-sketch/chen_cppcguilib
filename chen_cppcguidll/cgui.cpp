@@ -33,7 +33,7 @@ vector<string> summonFrame()
 	return frame;
 }
 
-_declspec(dllexport) void refreshScreen()
+__declspec(dllexport) void __stdcall refreshScreen()
 {
 	vector<string> framePerLine = summonFrame();
 	system("cls");
@@ -41,3 +41,4 @@ _declspec(dllexport) void refreshScreen()
 		cout << kv << endl;
 	return;
 }
+//主函数定义在此
