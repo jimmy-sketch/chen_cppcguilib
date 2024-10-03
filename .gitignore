@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/chen_cppcguilib/123.cpp
+/chen_cppcguilib/chen_cppcguilib.lib
+/chen_cppcguilib/demo.exe
