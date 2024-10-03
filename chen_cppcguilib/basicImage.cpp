@@ -1,4 +1,6 @@
 #include "basicImage.h"
+#include<vector>
+using namespace std;
 
 basicImage::basicImage(vector<string> x)
 {
