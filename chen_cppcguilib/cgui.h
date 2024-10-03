@@ -17,13 +17,13 @@ void refreshScreen();
 
 
 //创建控件
-basicImage createImage(int row, int column, vector<string> imageByLine);
-basicText createText(int row, int column, string text);
-basicProgressBar createProgressBar(int row, int column, int Length);
+basicImage*  createImage(int row, int column, vector<string> imageByLine);
+basicText*  createText(int row, int column, string text);
+basicProgressBar*  createProgressBar(int row, int column, int Length);
 //更改控件
-void changeImage(basicImage& youwant, vector<string> imageByLine);
-void changeText(basicText& youwant, string text);
-void changeProgress(basicProgressBar& youwant, int progress);
+void  changeImage(basicImage* youwant, vector<string> imageByLine);
+void  changeText(basicText* youwant, string text);
+void  changeProgress(basicProgressBar* youwant, int progress);
 
 //一些其他函数……
 //TODO

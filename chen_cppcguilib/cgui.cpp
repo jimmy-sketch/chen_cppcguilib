@@ -41,51 +41,54 @@ void refreshScreen()
 }
 
 //create相关函数，需要注意的是所有的排版相关参数(row/column)将会被忽略，在未来会加入相关功能
-basicImage createImage(int row, int column, vector<string> imageByLine)
+basicImage*  createImage(int row, int column, vector<string> imageByLine)
 {
 	basicImage returnThing(imageByLine);
 	thingMapper thisThing = make_pair(allImage.size(),thingType::image);
 	allImage.push_back(returnThing);
 	allThings.push_back(thisThing);
-	return returnThing;
+	refreshScreen();
+	return &allImage[allImage.size()-1];
 }
 
-basicText createText(int row, int column, string text)
+basicText*  createText(int row, int column, string text)
 {
 	basicText returnThing(text);
 	thingMapper thisThing = make_pair(allText.size(), thingType::text);
 	allText.push_back(returnThing);
 	allThings.push_back(thisThing);
-	return returnThing;
+	refreshScreen();
+	return &allText[allText.size() - 1];
 }
 
-basicProgressBar createProgressBar(int row, int column, int length)
+basicProgressBar*  createProgressBar(int row, int column, int length)
 {
 	basicProgressBar returnthing(length, 0);//改变样式将会在未来加入
 	thingMapper thisThing = make_pair(allProgressBars.size(), thingType::progressBar);
 	allProgressBars.push_back(returnthing);
 	allThings.push_back(thisThing);
-	return returnthing;
+	refreshScreen();
+	return &allProgressBars[allProgressBars.size() - 1];
 }
 
 //change相关函数
-void changeImage(basicImage& youwant, vector<string> imageByLine)
+void  changeImage(basicImage* youwant, vector<string> imageByLine)
 {
-	youwant.changeImage(imageByLine);
+	youwant->changeImage(imageByLine);
 	refreshScreen();
 	return;
 }
 
-void changeProgress(basicProgressBar& youwant, int progress)
+void  changeProgress(basicProgressBar* youwant, int progress)
 {
-	youwant.updateProgress(progress);
+	youwant->updateProgress(progress);
 	refreshScreen();
 	return;
 }
 
-void changeText(basicText& youwant, string text)
+void changeText(basicText* youwant, string text)
 {
-	youwant.changeText(text);
+	youwant->changeText(text);
 	refreshScreen();
 	return;
 }
