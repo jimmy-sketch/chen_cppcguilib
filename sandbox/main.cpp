@@ -20,42 +20,16 @@ static vector<string> getImageByLines(const std::string& imageFile) {
     return lines;
 }
 
-// Create
-static auto testCreateImage() {
-    return createImage(0, 0, getImageByLines("apple.png"));
-}
+int main() {
+    auto image = createImage(0, 0, getImageByLines("apple.png"));
+    auto text = createText(0, 0, "Hello World!");
+    auto progressBar = createProgressBar(0, 0, 10);
 
-static auto testCreateProgressBar() {
-    return createProgressBar(0, 0, 10);
-}
-
-static auto testCreateText() {
-    string text = "Hello World!";
-    return createText(0, 0, text);
-}
-
-// Change
-static void testChangeImage(basicImage* image) {
-    changeImage(image, getImageByLines("diamond_sword.png"));
-}
-
-static void testChangeProgress(basicProgressBar* progressBar) {
     for (int i = 10; i <= 100; i += 10) {
         this_thread::sleep_for(200ms);
         changeProgress(progressBar, i);
     }
-}
-
-static void testChangeText(basicText* text) {
+    changeImage(image, getImageByLines("diamond_sword.png"));
     changeText(text, "Hello CGUI!");
-}
-
-// Main
-int main() {
-    auto image = testCreateImage();
-    auto text = testCreateText();
-    auto progressBar = testCreateProgressBar();
-    testChangeProgress(progressBar);
-    testChangeImage(image);
-    testChangeText(text);
+    return 0;
 }
