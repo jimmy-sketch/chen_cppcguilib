@@ -4,11 +4,18 @@
 #include"basicProgressBar.h"
 #include"basicText.h"
 #include<iostream>
+#include<algorithm>
 using namespace std;
 
 enum thingType{image,text,progressBar};
 
-typedef pair<int, thingType> thingMapper;
+struct thingMapper
+{
+	pair<int, thingType> mapper;
+	int row, column;
+	thingMapper(pair<int, thingType> x, int row, int column);
+};
+//typedef pair<int, thingType> thingMapper;
 //first代表这一个控件在单独的控件列表中的下标
 
 //重要函数：刷新、呈现控件内容
@@ -26,4 +33,5 @@ void  changeText(basicText* youwant, string text);
 void  changeProgress(basicProgressBar* youwant, int progress);
 
 //一些其他函数……
-//TODO
+//排版相关
+template<typename T> void changeLocation(thingType type, T* thing, int row, int column);
