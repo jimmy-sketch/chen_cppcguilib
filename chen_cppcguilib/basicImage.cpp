@@ -25,6 +25,14 @@ int basicImage::getTotalLines()
 	return image.size();
 }
 
+int basicImage::getMaxLineLength()
+{
+	size_t maxLength = 0;
+	for (auto kv : image)
+		maxLength = max(kv.length(), maxLength);
+	return maxLength;
+}
+
 void basicImage::changeImage(vector<string> x)
 {
 	image = x;

@@ -8,6 +8,7 @@ public:
     basicText(string x);
     void changeText(string x);
     string selfDraw();
+    int getLength();
 private:
     string data;
 };

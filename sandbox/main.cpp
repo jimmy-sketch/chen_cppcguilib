@@ -21,9 +21,9 @@ static vector<string> getImageByLines(const std::string& imageFile) {
 }
 
 int main() {
-    auto image = createImage(0, 0, getImageByLines("apple.png"));
-    auto text = createText(0, 0, "Hello World!");
-    auto progressBar = createProgressBar(0, 0, 10);
+    auto image = createImage(1, 0, getImageByLines("apple.png"));
+    auto text = createText(1, 1, "Hello World!");
+    auto progressBar = createProgressBar(3, 0, 10);
 
     for (int i = 10; i <= 100; i += 10) {
         this_thread::sleep_for(200ms);

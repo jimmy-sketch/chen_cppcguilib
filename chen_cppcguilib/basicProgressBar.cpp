@@ -35,3 +35,8 @@ string basicProgressBar::selfDraw()
 	}
 	return ret;
 }
+
+int basicProgressBar::getLength()
+{
+	return length;
+}

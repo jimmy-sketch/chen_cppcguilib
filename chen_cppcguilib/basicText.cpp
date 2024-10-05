@@ -11,6 +11,11 @@ string basicText::selfDraw()
 	return data;
 }
 
+int basicText::getLength()
+{
+	return data.length();
+}
+
 void basicText::changeText(string x)
 {
 	data = x;

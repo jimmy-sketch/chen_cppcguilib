@@ -10,6 +10,7 @@ public:
     string selfDraw();//ÔİÊ±ÆúÓÃ£¿
     string getOneLine(int lineNumber);
     int getTotalLines();
+    int getMaxLineLength();
 private:
     vector<string> image;
 };

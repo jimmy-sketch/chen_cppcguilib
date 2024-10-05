@@ -9,6 +9,7 @@ public:
 	~basicProgressBar() {};
 	void updateProgress(int dProgress);
 	string selfDraw();
+	int getLength();
 private:
 	int length, style, progress;
 };
