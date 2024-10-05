@@ -1,13 +1,13 @@
 #include"cgui.h"
 using namespace std;
-//tmdè¿™å‡ ä¸ªç ´ç»„ä»¶è€¦åˆåœ¨ä¸€èµ·äº†ï¼
+//tmdÕâ¼¸¸öÆÆ×é¼şñîºÏÔÚÒ»ÆğÁË£¡
 vector<thingMapper> allThings;
 vector<basicImage> allImage;
 vector<basicText> allText;
 vector<basicProgressBar> allProgressBars;
 
 
-//todo:åŠ å…¥æ’ç‰ˆ
+//todo:¼ÓÈëÅÅ°æ
 
 thingMapper::thingMapper(pair<int, thingType> x, int _row, int _column)
 {
@@ -37,14 +37,14 @@ string summonFrame()
 	
 	sort(allThings.begin(), allThings.end(), thingCmp);
 	int maxRow = allThings[allThings.size() - 1].row;
-	//æŒ‰é€»è¾‘è¡Œæ‹†åˆ†
+	//°´Âß¼­ĞĞ²ğ·Ö
 	vector<vector<thingMapper> > thingsByRow(maxRow + 2);
 	for (auto kv : allThings)
 		thingsByRow[kv.row].push_back(kv);
-	//æŒ‰é€»è¾‘è¡Œæ¸²æŸ“
+	//°´Âß¼­ĞĞäÖÈ¾
 	for (int i = 1; i <= maxRow; i++)
 	{
-		//1.ç”Ÿæˆæ¯ä¸ªæ§ä»¶çš„æ€»å®é™…è¡Œæ•°
+		//1.Éú³ÉÃ¿¸ö¿Ø¼şµÄ×ÜÊµ¼ÊĞĞÊı
 		vector<int> linesPerThing = {};
 		for (auto kv : thingsByRow[i])
 		{
@@ -64,8 +64,8 @@ string summonFrame()
 			}
 		}
 		
-		//2.æŒ‰å®é™…è¡Œä¸€è¡Œä¸€è¡Œæ˜¾ç¤º
-		//ç”±äºæ§ä»¶ä¹‹é—´çš„é—´è·åŠŸèƒ½è¿˜æœªåŠ å…¥ï¼Œæ‰€ä»¥é»˜è®¤å·¦è¾¹ç©ºä¸€å³è¾¹ç©ºä¸€
+		//2.°´Êµ¼ÊĞĞÒ»ĞĞÒ»ĞĞÏÔÊ¾
+		//ÓÉÓÚ¿Ø¼şÖ®¼äµÄ¼ä¾à¹¦ÄÜ»¹Î´¼ÓÈë£¬ËùÒÔÄ¬ÈÏ×ó±ß¿ÕÒ»ÓÒ±ß¿ÕÒ»
 		string oneLogicLine = "";
 		while (!allZero(linesPerThing))
 		{
@@ -73,7 +73,7 @@ string summonFrame()
 			{
 				if (linesPerThing[j] == 0)
 				{
-					//å…·ä½“æ§ä»¶å…·ä½“åˆ¤æ–­â€¦â€¦
+					//¾ßÌå¿Ø¼ş¾ßÌåÅĞ¶Ï¡­¡­
 					switch (thingsByRow[i][j].mapper.second)
 					{
 					case image:
@@ -100,12 +100,12 @@ string summonFrame()
 				}
 				else
 				{
-					//å…·ä½“æ§ä»¶å…·ä½“åˆ¤æ–­â€¦â€¦
+					//¾ßÌå¿Ø¼ş¾ßÌåÅĞ¶Ï¡­¡­
 					switch (thingsByRow[i][j].mapper.second)
 					{
 					case image:
 					{
-						//è¾“å‡ºå›¾ç‰‡çš„ä¸€è¡Œ
+						//Êä³öÍ¼Æ¬µÄÒ»ĞĞ
 						auto thisImage = allImage[thingsByRow[i][j].mapper.first];
 						oneLogicLine += thisImage.getOneLine(thisImage.getTotalLines() - linesPerThing[j] + 1);
 						if (thisImage.getOneLine(thisImage.getTotalLines() - linesPerThing[j] + 1).length() < thisImage.getMaxLineLength())
@@ -147,13 +147,13 @@ string summonFrame()
 void refreshScreen()
 {
 	string frame = summonFrame();
-	// ä½¿ç”¨ANSIç¼–ç æ¸…å±
+	// Ê¹ÓÃANSI±àÂëÇåÆÁ
 	system("cls");
 	cout << frame;
 	return;
 }
 
-//createç›¸å…³å‡½æ•°ï¼Œéœ€è¦æ³¨æ„çš„æ˜¯æ‰€æœ‰çš„æ’ç‰ˆç›¸å…³å‚æ•°(row/column)å°†ä¼šè¢«å¿½ç•¥ï¼Œåœ¨æœªæ¥ä¼šåŠ å…¥ç›¸å…³åŠŸèƒ½
+//createÏà¹Øº¯Êı£¬ĞèÒª×¢ÒâµÄÊÇËùÓĞµÄÅÅ°æÏà¹Ø²ÎÊı(row/column)½«»á±»ºöÂÔ£¬ÔÚÎ´À´»á¼ÓÈëÏà¹Ø¹¦ÄÜ
 basicImage*  createImage(int row, int column, vector<string> imageByLine)
 {
 	basicImage returnThing(imageByLine);
@@ -176,7 +176,7 @@ basicText*  createText(int row, int column, string text)
 
 basicProgressBar*  createProgressBar(int row, int column, int length)
 {
-	basicProgressBar returnthing(length, 0);//æ”¹å˜æ ·å¼å°†ä¼šåœ¨æœªæ¥åŠ å…¥
+	basicProgressBar returnthing(length, 0);//¸Ä±äÑùÊ½½«»áÔÚÎ´À´¼ÓÈë
 	thingMapper thisThing = thingMapper(make_pair(allProgressBars.size(), thingType::progressBar), row, column);
 	allProgressBars.push_back(returnthing);
 	allThings.push_back(thisThing);
@@ -184,7 +184,7 @@ basicProgressBar*  createProgressBar(int row, int column, int length)
 	return &allProgressBars[allProgressBars.size() - 1];
 }
 
-//changeç›¸å…³å‡½æ•°
+//changeÏà¹Øº¯Êı
 void  changeImage(basicImage* youwant, vector<string> imageByLine)
 {
 	youwant->changeImage(imageByLine);
