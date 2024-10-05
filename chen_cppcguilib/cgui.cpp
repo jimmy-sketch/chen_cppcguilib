@@ -176,8 +176,13 @@ basicText*  createText(int row, int column, string text)
 
 basicProgressBar*  createProgressBar(int row, int column, int length)
 {
-	basicProgressBar returnthing(length, 0);//改变样式将会在未来加入
+<<<<<<< HEAD
+	basicProgressBar returnthing(length, 0);//鏀瑰彉鏍峰紡灏嗕細鍦ㄦ湭鏉ュ姞鍏?
 	thingMapper thisThing = thingMapper(make_pair(allProgressBars.size(), thingType::progressBar), row, column);
+=======
+	basicProgressBar returnthing(length, 0);//改变样式将会在未来加入
+	thingMapper thisThing = thingMapper(make_pair(allThings.size(), thingType::progressBar), row, column);
+>>>>>>> b409db0b33c37ec4b8bfcc2da1909112fa3f8583
 	allProgressBars.push_back(returnthing);
 	allThings.push_back(thisThing);
 	refreshScreen();
