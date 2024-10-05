@@ -5,6 +5,7 @@ using namespace std;
 class basicText
 {
 public:
+    basicText() {}
     basicText(string x);
     void changeText(string x);
     string selfDraw();
