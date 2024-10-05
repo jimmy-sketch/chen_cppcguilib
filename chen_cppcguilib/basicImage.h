@@ -7,7 +7,9 @@ class basicImage
 public:
     basicImage(vector<string> _image);
     void changeImage(vector<string> _image);
-    string selfDraw();
+    string selfDraw();//ÔÝÊ±ÆúÓÃ£¿
+    string getOneLine(int lineNumber);
+    int getTotalLines();
 private:
     vector<string> image;
 };

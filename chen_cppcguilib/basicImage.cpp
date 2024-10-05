@@ -15,6 +15,16 @@ string basicImage::selfDraw()
 	return ret;
 }
 
+string basicImage::getOneLine(int lineNumber)
+{
+	return image[lineNumber - 1];
+}
+
+int basicImage::getTotalLines()
+{
+	return image.size();
+}
+
 void basicImage::changeImage(vector<string> x)
 {
 	image = x;
