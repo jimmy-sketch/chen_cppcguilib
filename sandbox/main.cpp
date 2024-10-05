@@ -23,6 +23,7 @@ static vector<string> getImageByLines(const std::string& imageFile) {
 int main() {
     auto image = createImage(1, 0, getImageByLines("apple.png"));
     auto text = createText(1, 1, "Hello World!");
+    auto text2 = createText(2, 1, "Hello World!");
     auto progressBar = createProgressBar(3, 0, 10);
 
     for (int i = 10; i <= 100; i += 10) {
