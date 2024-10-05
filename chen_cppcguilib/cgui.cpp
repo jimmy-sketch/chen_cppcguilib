@@ -1,13 +1,13 @@
 #include"cgui.h"
 using namespace std;
-//tmdè¿™å‡ ä¸ªç ´ç»„ä»¶è€¦åˆåœ¨ä¸€èµ·äº†ï¼
+//tmdÕâ¼¸¸öÆÆ×é¼şñîºÏÔÚÒ»ÆğÁË£¡
 vector<thingMapper> allThings;
 vector<basicImage> allImage;
 vector<basicText> allText;
 vector<basicProgressBar> allProgressBars;
 
 
-//todo:åŠ å…¥æ’ç‰ˆ
+//todo:¼ÓÈëÅÅ°æ
 
 thingMapper::thingMapper(pair<int, thingType> x, int _row, int _column)
 {
@@ -24,12 +24,12 @@ string summonFrame()
 void refreshScreen()
 {
 	string frame = summonFrame();
-	// ä½¿ç”¨ANSIç¼–ç æ¸…å±
-	cout << "\033[H" << frame;
+	system("cls");//»ùÓÚwindows(msvc),ÔİÊ±²»¿¼ÂÇ¼ÓÈëLinuxÏà¹ØÖ§³Ö
+	cout << frame;
 	return;
 }
 
-//createç›¸å…³å‡½æ•°ï¼Œéœ€è¦æ³¨æ„çš„æ˜¯æ‰€æœ‰çš„æ’ç‰ˆç›¸å…³å‚æ•°(row/column)å°†ä¼šè¢«å¿½ç•¥ï¼Œåœ¨æœªæ¥ä¼šåŠ å…¥ç›¸å…³åŠŸèƒ½
+//createÏà¹Øº¯Êı£¬ĞèÒª×¢ÒâµÄÊÇËùÓĞµÄÅÅ°æÏà¹Ø²ÎÊı(row/column)½«»á±»ºöÂÔ£¬ÔÚÎ´À´»á¼ÓÈëÏà¹Ø¹¦ÄÜ
 basicImage*  createImage(int row, int column, vector<string> imageByLine)
 {
 	basicImage returnThing(imageByLine);
@@ -52,7 +52,7 @@ basicText*  createText(int row, int column, string text)
 
 basicProgressBar*  createProgressBar(int row, int column, int length)
 {
-	basicProgressBar returnthing(length, 0);//æ”¹å˜æ ·å¼å°†ä¼šåœ¨æœªæ¥åŠ å…¥
+	basicProgressBar returnthing(length, 0);//¸Ä±äÑùÊ½½«»áÔÚÎ´À´¼ÓÈë
 	thingMapper thisThing = thingMapper(make_pair(allThings.size(), thingType::progressBar), row, column);
 	allProgressBars.push_back(returnthing);
 	allThings.push_back(thisThing);
@@ -60,7 +60,7 @@ basicProgressBar*  createProgressBar(int row, int column, int length)
 	return &allProgressBars[allProgressBars.size() - 1];
 }
 
-//changeç›¸å…³å‡½æ•°
+//changeÏà¹Øº¯Êı
 void  changeImage(basicImage* youwant, vector<string> imageByLine)
 {
 	youwant->changeImage(imageByLine);
