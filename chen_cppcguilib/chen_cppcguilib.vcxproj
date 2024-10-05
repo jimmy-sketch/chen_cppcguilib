@@ -135,6 +135,7 @@
     <ClInclude Include="basicProgressBar.h" />
     <ClInclude Include="basicText.h" />
     <ClInclude Include="cgui.h" />
+    <ClInclude Include="component.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="basicImage.cpp" />

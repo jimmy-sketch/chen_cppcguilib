@@ -1,24 +1,28 @@
 #include "basicProgressBar.h"
+#include <cassert>
+
+using namespace std;
 
 basicProgressBar::basicProgressBar(int _length, int _style)
+	: length(_length), style(_style), progress(0)
 {
-	length = _length;
-	style = _style;
-	progress = 0;
+	assert(length > 3);
 }
 
-void basicProgressBar::updateProgress(int dProgress)
+int basicProgressBar::getWidth() const
 {
-	progress = dProgress;
+	return length;
 }
 
-string basicProgressBar::selfDraw()
+int basicProgressBar::getHeight() const
+{
+	return 1;
+}
+
+std::vector<std::string> basicProgressBar::getData() const
 {
 	string ret = "";
-	//样式部分：TODO
-	
-	char startChar = '[', fillChar = '=', seqChar = '>', endChar = ']';
-	double actualLength = (1.0 * progress / 100.0) * (length);
+	double actualLength = ((double)progress / 100.0) * (length);
 	ret += startChar;
 	for (double i = 1; i <= actualLength; i += 1)
 		ret += fillChar;
@@ -26,17 +30,23 @@ string basicProgressBar::selfDraw()
 	{
 		ret += seqChar;
 		for (double i = 1; i <= (length - actualLength); i++)
-			ret += ' ';
-		ret += endChar;
+			ret += gapChar;
 	}
-	else
-	{
-		ret += endChar;
-	}
-	return ret;
+	ret += endChar;
+	return { ret };
 }
 
-int basicProgressBar::getLength()
+void basicProgressBar::updateProgress(int progress)
 {
-	return length;
+	this->progress = progress;
+}
+
+int basicProgressBar::getProgress() const
+{
+	return progress;
+}
+
+bool basicProgressBar::isDone() const
+{
+	return progress >= 100;
 }

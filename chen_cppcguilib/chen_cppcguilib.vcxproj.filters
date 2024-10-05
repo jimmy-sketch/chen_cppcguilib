@@ -24,6 +24,9 @@
     <ClInclude Include="basicProgressBar.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="component.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
     <ClInclude Include="cgui.h">
       <Filter>头文件</Filter>
     </ClInclude>

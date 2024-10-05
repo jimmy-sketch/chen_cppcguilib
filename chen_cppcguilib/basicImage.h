@@ -1,17 +1,21 @@
 #pragma once
 #include<string>
 #include<vector>
-using namespace std;
-class basicImage
+#include "component.h"
+
+class basicImage : public component
 {
 public:
-    basicImage(vector<string> _image);
-    void changeImage(vector<string> _image);
-    string selfDraw();//ÔÝÊ±ÆúÓÃ£¿
-    string getOneLine(int lineNumber);
-    int getTotalLines();
-    int getMaxLineLength();
-private:
-    vector<string> image;
-};
+    basicImage(const std::vector<std::string>& image);
+    int getWidth() const override;
+    int getHeight() const override;
+    std::vector<std::string> getData() const override;
+    
+    void setImage(const std::vector<std::string>& image);
 
+private:
+    std::vector<std::string> image;
+    size_t width;
+    void checkImage();
+    void calculateWidth();
+};

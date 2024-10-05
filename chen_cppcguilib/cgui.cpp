@@ -1,201 +1,131 @@
 #include"cgui.h"
+#include <map>
 using namespace std;
-//tmd这几个破组件耦合在一起了！
-vector<shared_ptr<thingMapper>> allThings;
-vector<shared_ptr<basicImage>> allImage;
-vector<shared_ptr<basicText>> allText;
-vector<shared_ptr<basicProgressBar>> allProgressBars;
 
+struct pos {
+    int row, col;
+};
+static bool operator<(const pos& lhs, const pos& rhs) {
+    return (lhs.row < rhs.row) || (lhs.row == rhs.row && lhs.col < rhs.col);
+}
+map<pos, shared_ptr<component>> components;
 
-//todo:加入排版
-
-thingMapper::thingMapper(pair<int, thingType> x, int _row, int _column)
-{
-	mapper = x;
-	row = _row, column = _column;
+// 获得组件上方一个组件的高
+static int getUpperComponentHeight(const pos& current) {
+    pos upper = { current.row - 1, current.col };
+    auto it = components.find(upper);
+    if (it != components.end()) {
+        return it->second->getHeight();
+    }
+    return 0;
 }
 
-bool thingCmp(std::shared_ptr<thingMapper> a, std::shared_ptr<thingMapper> b)
-{
-	if (a->row == b->row)
-		return a->column < b->column;
-	else
-		return a->row < b->row;
+// 获得组件上方所有组件的高的总和
+static int getAboveComponentHeight(const pos& current) {
+    pos upper = current;
+    int h = getUpperComponentHeight(upper);
+    int ret = h;
+    while (h != 0) {
+        upper = { upper.row - 1, upper.col };
+        h = getUpperComponentHeight(upper);
+        ret += h;
+    }
+    return ret;
 }
 
-bool allZero(vector<int> vec)
-{
-	for (auto kv : vec)
-		if (kv)
-			return false;
-	return true;
+// 获得左边组件的宽
+static int getLeftComponentWidth(const pos& current) {
+    pos left = { current.row, current.col - 1 };
+    auto it = components.find(left);
+    if (it != components.end()) {
+        return it->second->getWidth();
+    }
+    return 0;
+}
+
+// 获得左边组件的高
+static int getLeftComponentHeight(const pos& current) {
+    pos left = { current.row, current.col - 1 };
+    auto it = components.find(left);
+    if (it != components.end()) {
+        return it->second->getHeight();
+    }
+    return 0;
+}
+
+// target的长度一直加到n
+static void addNewLinesTo(vector<vector<string>>& target, int n) {
+    if (n > target.size()) {
+        for (int i = 0; i < n - target.size(); ++i) {
+            target.emplace_back();
+        }
+    }
 }
 
 string summonFrame()
 {
-	string finalFrame = "";
-	
-	sort(allThings.begin(), allThings.end(), thingCmp);
-	int maxRow = allThings[allThings.size() - 1]->row;
-	//按逻辑行拆分
-	vector<vector<thingMapper> > thingsByRow(maxRow + 2);
-	for (auto kv : allThings)
-		thingsByRow[kv->row].push_back(*kv);
-	//按逻辑行渲染
-	for (int i = 1; i <= maxRow; i++)
-	{
-		//1.生成每个控件的总实际行数
-		vector<int> linesPerThing = {};
-		for (auto kv : thingsByRow[i])
-		{
-			switch (kv.mapper.second)
-			{
-			case image:
-				linesPerThing.push_back(allImage[kv.mapper.first]->getTotalLines());
-				break;
-			case text:
-				linesPerThing.push_back(1);
-				break;
-			case progressBar:
-				linesPerThing.push_back(1);
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//2.按实际行一行一行显示
-		//由于控件之间的间距功能还未加入，所以默认左边空一右边空一
-		string oneLogicLine = "";
-		while (!allZero(linesPerThing))
-		{
-			for (int j = 0; j < linesPerThing.size(); j++)
-			{
-				if (linesPerThing[j] == 0)
-				{
-					//具体控件具体判断……
-					switch (thingsByRow[i][j].mapper.second)
-					{
-					case image:
-					{
-						for (int k = 1; k <= allImage[thingsByRow[i][j].mapper.first]->getMaxLineLength(); k++)
-							oneLogicLine += " ";
-						break;
-					}
-					case text:
-					{
-						for (int k = 1; k <= allText[thingsByRow[i][j].mapper.first]->getLength(); k++)
-							oneLogicLine += " ";
-						break;
-					}
-					case progressBar:
-					{
-						for (int k = 1; k <= allProgressBars[thingsByRow[i][j].mapper.first]->getLength(); k++)
-							oneLogicLine += " ";
-						break;
-					}
-					default:
-						break;
-					}
-				}
-				else
-				{
-					//具体控件具体判断……
-					switch (thingsByRow[i][j].mapper.second)
-					{
-					case image:
-					{
-						//输出图片的一行
-						auto thisImage = allImage[thingsByRow[i][j].mapper.first];
-						oneLogicLine += thisImage->getOneLine(thisImage->getTotalLines() - linesPerThing[j] + 1);
-						if (thisImage->getOneLine(thisImage->getTotalLines() - linesPerThing[j] + 1).length() < thisImage->getMaxLineLength())
-						{
-							for (int k = 1; k <= thisImage->getOneLine(thisImage->getTotalLines() - linesPerThing[j] + 1).length() - thisImage->getMaxLineLength(); k++)
-								oneLogicLine += " ";
-						}
-						linesPerThing[j]--;
-						break;
-					}
-					case text:
-					{
-						auto& thisText = allText[thingsByRow[i][j].mapper.first];
-						oneLogicLine += thisText->selfDraw();
-						linesPerThing[j]--;
-						break;
-					}
-					case progressBar:
-					{
-						auto thisProgressBar = allProgressBars[thingsByRow[i][j].mapper.first];
-						oneLogicLine += thisProgressBar->selfDraw();
-						linesPerThing[j]--;
-						break;
-					}
-					default:
-						break;
-					}
-				}
-				oneLogicLine = oneLogicLine + " ";
-			}
-			oneLogicLine = oneLogicLine + "\n";
-		}
-		finalFrame = finalFrame + oneLogicLine;
-	}
-
-	return finalFrame;
+    vector<vector<string>> lines;
+    for (auto& c : components) {
+        int row = getAboveComponentHeight(c.first);
+        addNewLinesTo(lines, row + 1);
+        for (int l = 0; l < c.second->getHeight(); ++l) {
+            addNewLinesTo(lines, row + l + 1);
+            auto str = c.second->getData()[l];
+            // 如果左边短，右边长，右边应该补齐一些空格
+            // 同时也要注意，左右同时占行的部分中间不要加空格
+            int h = getLeftComponentHeight(c.first);
+            if (h != 0 && h < c.second->getHeight() && l >= h) {
+                str.insert(0, getLeftComponentWidth(c.first), ' ');
+            }
+            lines[row + l].push_back(str);
+        }
+        // 以后加入组件间距
+    }
+    string ret = "";
+    for (auto& line : lines) {
+        for (auto& str : line) {
+            ret += str;
+        }
+        ret += "\n";
+    }
+    return ret;
 }
 
 void refreshScreen()
 {
-	string frame = summonFrame();
-	// 使用ANSI编码清屏
-	system("cls");
-	cout << frame;
-	return;
+    system("cls");
+    cout << summonFrame();
 }
 
-//create相关函数，需要注意的是所有的排版相关参数(row/column)将会被忽略，在未来会加入相关功能
-shared_ptr<basicImage>  createImage(int row, int column, vector<string> imageByLine)
+template<class T, class...Args>
+shared_ptr<T> set(pos pos, Args...args)
 {
-	allImage.emplace_back(make_shared<basicImage>(imageByLine));
-	allThings.emplace_back(make_shared<thingMapper>(make_pair(allImage.size() - 1, thingType::image), row, column));
-	refreshScreen();
-	return allImage.back();
+    auto ret = make_shared<T>(args...);
+    components[pos] = ret;
+    refreshScreen();
+    return ret;
+}
+shared_ptr<basicImage>  setImage(int row, int col, vector<string> imageByLine)  { return set<basicImage>({ row,col }, imageByLine); }
+shared_ptr<basicText>  setText(int row, int col, string text)			    	{ return set<basicText>({ row,col }, text); }
+shared_ptr<basicProgressBar>  setProgressBar(int row, int col, int len)		    { return set<basicProgressBar>({ row,col }, len, 0); }
+
+void setTo(int row, int col, std::shared_ptr<component> src)
+{
+    components[{ row, col }] = src;
 }
 
-shared_ptr<basicText>  createText(int row, int column, string text)
+void modifyImage(shared_ptr<basicImage> target, vector<string> imageByLine)
 {
-	allText.emplace_back(make_shared<basicText>(text));
-	allThings.emplace_back(make_shared<thingMapper>(make_pair(allText.size() - 1, thingType::text), row, column));
-	refreshScreen();
-	return allText.back();
+    target->setImage(imageByLine);
+    refreshScreen();
 }
-
-shared_ptr<basicProgressBar>  createProgressBar(int row, int column, int length)
+void modifyText(shared_ptr<basicText> target, string text)
 {
-	allProgressBars.emplace_back(make_shared<basicProgressBar>(length, 0));
-	allThings.emplace_back(make_shared<thingMapper>(make_pair(allProgressBars.size() - 1, thingType::progressBar), row, column));
-	refreshScreen();
-	return allProgressBars.back();
+    target->setText(text);
+    refreshScreen();
 }
-
-//change相关函数
-void  changeImage(shared_ptr<basicImage> youwant, vector<string> imageByLine)
+void updateProgress(shared_ptr<basicProgressBar> target, int progress)
 {
-	youwant->changeImage(imageByLine);
-	refreshScreen();
-	return;
-}
-
-void  changeProgress(shared_ptr<basicProgressBar> youwant, int progress)
-{
-	youwant->updateProgress(progress);
-	refreshScreen();
-	return;
-}
-
-void changeText(shared_ptr<basicText> youwant, string text)
-{
-	youwant->changeText(text);
-	refreshScreen();
-	return;
+    target->updateProgress(progress);
+    refreshScreen();
 }

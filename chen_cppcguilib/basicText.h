@@ -1,16 +1,21 @@
 #pragma once
 #include<iostream>
 #include<string>
-using namespace std;
-class basicText
+#include "component.h"
+
+class basicText : public component
 {
 public:
-    basicText() {}
-    basicText(string x);
-    void changeText(string x);
-    string selfDraw();
-    int getLength();
-private:
-    string data;
-};
+    basicText(const std::string& str);
+    int getWidth() const override;
+    int getHeight() const override;
+    std::vector<std::string> getData() const override;
+    
+    void setText(const std::string& str);
 
+private:
+    std::string text;
+    size_t width;
+    void checkText();
+    void calculateWidth();
+};
