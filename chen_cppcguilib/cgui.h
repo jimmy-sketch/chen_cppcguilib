@@ -35,4 +35,4 @@ void  changeProgress(std::shared_ptr<basicProgressBar> youwant, int progress);
 
 //一些其他函数……
 //排版相关
-template<typename T> void changeLocation(thingType type, T* thing, int row, int column);
+template<typename T> void changeLocation(thingType type, shared_ptr<T> thing, int row, int column);
