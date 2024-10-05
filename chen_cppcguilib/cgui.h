@@ -9,7 +9,7 @@ std::string summonFrame();
 void refreshScreen();
 
 //生成并放置控件
-std::shared_ptr<basicImage>  setImage(int row, int col, std::vector<std::string> imageByLine);
+std::shared_ptr<basicImage> setImage(int row, int col, std::vector<std::string> imageByLine);
 std::shared_ptr<basicText>   setText(int row, int col, std::string text);
 std::shared_ptr<basicProgressBar>  setProgressBar(int row, int col, int len);
 //把某个控件放到...
