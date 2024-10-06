@@ -18,29 +18,14 @@ class page
 {
 public:
     //重要函数：刷新、呈现控件内容
-    std::string summonFrame();
-    void refreshScreen();
-
-    //生成并放置控件
-    template<class T, class...Args>
-    std::shared_ptr<T> set(pos pos, Args...args)
-    {
-        auto ret = std::make_shared<T>(args...);
-        components[pos] = ret;
-        refreshScreen();
-        return ret;
-    }
-    std::shared_ptr<basicImage> setImage(int row, int col, std::vector<std::string> imageByLine);
-    std::shared_ptr<basicText> setText(int row, int col, std::string text);
-    std::shared_ptr<basicProgressBar>  setProgressBar(int row, int col, int len);
+    std::string toString();
+    void update();
 
     //把某个控件放到...
     void setTo(int row, int col, std::shared_ptr<component> src);
 
-    //更改控件
-    void  modifyImage(std::shared_ptr<basicImage> src, std::vector<std::string> imageByLine);
-    void  modifyText(std::shared_ptr<basicText> src, std::string text);
-    void  updateProgress(std::shared_ptr<basicProgressBar> src, int progress);
+    //清空控件
+    void clear();
 
 private:
     std::map<pos, std::shared_ptr<component>> components;

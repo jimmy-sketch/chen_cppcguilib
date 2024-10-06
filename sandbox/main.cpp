@@ -45,34 +45,49 @@ static vector<string> bigChar(char c) {
     return image;
 }
 
-int main() {
+void initFont() {
     FILE* f = nullptr;
     fopen_s(&f, "simhei.ttf", "rb");
     fread(ttf_buffer, 1, static_cast<size_t>(1) << 25, f);
     stbtt_InitFont(&font, ttf_buffer, stbtt_GetFontOffsetForIndex(ttf_buffer, 0));
+}
 
+int main() {
+    initFont();
     page p;
-    auto image = p.setImage(0, 0, getImageByLines("apple.png"));
-    auto text = p.setText(0, 1, "Hello World!");
-    auto text2 = p.setText(1, 0, "\033[38;2;255;0;0mRed Text\033[0m");
-    auto progressBar = p.setProgressBar(2, 0, 10);
+
+    auto image = std::make_shared<basicImage>(getImageByLines("apple.png"));
+    auto progressBar = std::make_shared<basicProgressBar>(10, 0);
+
+    p.setTo(0, 0, image);
+    p.setTo(1, 0, std::make_shared<basicText>("\033[38;2;255;0;0mRed Text\033[0m"));
+    p.setTo(0, 1, std::make_shared<basicText>("Hello World!"));
+    p.setTo(2, 0, progressBar);
+    p.update();
 
     while (!progressBar->isDone()) {
         this_thread::sleep_for(200ms);
-        p.updateProgress(progressBar, progressBar->getProgress() + 10);
+        progressBar->updateProgress(progressBar->getProgress() + 10);
+        p.update();
     }
-    p.modifyImage(image, getImageByLines("diamond_sword.png"));
-    auto space = p.setText(0, 1, "  ");
-    p.setImage(0, 2, bigChar('C'));
+    image->setImage(getImageByLines("diamond_sword.png"));
+
+    p.clear();
+
+    auto space = make_shared<basicText>("   ");
+
+    p.setTo(0, 0, image);
+    p.setTo(0, 1, space);
+    p.setTo(0, 2, make_shared<basicImage>(bigChar('C')));
     p.setTo(0, 3, space);
-    p.setImage(0, 4, bigChar('G'));
+    p.setTo(0, 4, make_shared<basicImage>(bigChar('G')));
     p.setTo(0, 5, space);
-    p.setImage(0, 6, bigChar('U'));
+    p.setTo(0, 6, make_shared<basicImage>(bigChar('U')));
     p.setTo(0, 7, space);
-    p.setImage(0, 8, bigChar('I'));
+    p.setTo(0, 8, make_shared<basicImage>(bigChar('I')));
     p.setTo(0, 9, space);
     p.setTo(0, 10, image);
-    p.setTo(1, 0, space);
-    p.setTo(2, 0, space);
+    p.update();
+
     return 0;
 }

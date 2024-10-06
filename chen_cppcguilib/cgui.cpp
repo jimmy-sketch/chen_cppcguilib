@@ -9,7 +9,7 @@ static void addNewLinesTo(vector<vector<string>>& target, int n) {
     }
 }
 
-string page::summonFrame()
+string page::toString()
 {
     vector<vector<string>> lines;
     for (auto& c : components) {
@@ -18,8 +18,6 @@ string page::summonFrame()
         for (int l = 0; l < c.second->getHeight(); ++l) {
             addNewLinesTo(lines, row + l + 1);
             auto str = c.second->getData()[l];
-            // 如果左边短，右边长，右边应该补齐一些空格
-            // 同时也要注意，左右同时占行的部分中间不要加空格
             int h = getLeftComponentHeight(c.first);
             if (h != 0 && h < c.second->getHeight() && l >= h) {
                 str.insert(0, getAllLeftComponentWidth(c.first, l), ' ');
@@ -38,38 +36,20 @@ string page::summonFrame()
     return ret;
 }
 
-void page::refreshScreen()
+void page::update()
 {
     system("cls");
-    cout << summonFrame();
+    cout << toString();
 }
-
-shared_ptr<basicImage>  page::setImage(int row, int col, vector<string> imageByLine)  { return set<basicImage>({ row,col }, imageByLine); }
-shared_ptr<basicText>  page::setText(int row, int col, string text)			    	  { return set<basicText>({ row,col }, text); }
-shared_ptr<basicProgressBar>  page::setProgressBar(int row, int col, int len)		  { return set<basicProgressBar>({ row,col }, len, 0); }
 
 void page::setTo(int row, int col, std::shared_ptr<component> src)
 {
     components[{ row, col }] = src;
-    refreshScreen();
 }
 
-void page::modifyImage(shared_ptr<basicImage> src, vector<string> imageByLine)
+void page::clear()
 {
-    src->setImage(imageByLine);
-    refreshScreen();
-}
-
-void page::modifyText(shared_ptr<basicText> src, string text)
-{
-    src->setText(text);
-    refreshScreen();
-}
-
-void page::updateProgress(shared_ptr<basicProgressBar> src, int progress)
-{
-    src->updateProgress(progress);
-    refreshScreen();
+    components.clear();
 }
 
 int page::getUpperComponentHeight(const pos& current) {
