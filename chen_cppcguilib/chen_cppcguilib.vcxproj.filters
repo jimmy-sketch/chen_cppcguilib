@@ -30,6 +30,9 @@
     <ClInclude Include="cgui.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="multiLineText.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="basicText.cpp">
@@ -42,6 +45,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="cgui.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="multiLineText.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

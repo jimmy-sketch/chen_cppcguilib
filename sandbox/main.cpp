@@ -58,11 +58,14 @@ int main() {
 
     auto image = std::make_shared<basicImage>(getImageByLines("apple.png"));
     auto progressBar = std::make_shared<basicProgressBar>(10, 0);
+    vector<string> multiText = { "hello","world","CGUI!" };
+    auto multiLine = std::make_shared<multiLineText>(multiText);
 
     p.setTo(0, 0, image);
     p.setTo(1, 0, std::make_shared<basicText>("\033[38;2;255;0;0mRed Text\033[0m"));
     p.setTo(0, 1, std::make_shared<basicText>("Hello World!"));
     p.setTo(2, 0, progressBar);
+    p.setTo(2, 1, multiLine);
     p.update();
 
     while (!progressBar->isDone()) {
