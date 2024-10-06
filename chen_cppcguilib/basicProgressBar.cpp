@@ -22,15 +22,18 @@ int basicProgressBar::getHeight() const
 std::vector<std::string> basicProgressBar::getData() const
 {
 	string ret = "";
-	double actualLength = ((double)progress / 100.0) * (length);
-	ret += startChar;
-	for (double i = 1; i <= actualLength; i += 1)
-		ret += fillChar;
-	if (progress != 100)
-	{
-		ret += seqChar;
-		for (double i = 1; i <= (length - actualLength); i++)
+	int fillCount = (int)((double)progress * (double)(length - 2) / 100.0);
+	ret += beginChar;
+	for (int i = 0; i < length - 2; ++i) {
+		if (i < fillCount) {
+			ret += fillChar;
+		}
+		else if (i == fillCount) {
+			ret += seqChar;
+		}
+		else {
 			ret += gapChar;
+		}
 	}
 	ret += endChar;
 	return { ret };

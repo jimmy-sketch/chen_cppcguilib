@@ -61,11 +61,11 @@ int main() {
     vector<string> multiText = { "hello","world","CGUI!" };
     auto multiLine = std::make_shared<multiLineText>(multiText);
 
-    p.setTo(0, 0, image);
-    p.setTo(1, 0, std::make_shared<basicText>("\033[38;2;255;0;0mRed Text\033[0m"));
-    p.setTo(0, 1, std::make_shared<basicText>("Hello World!"));
-    p.setTo(2, 0, progressBar);
-    p.setTo(2, 1, multiLine);
+    p.setTo({ 0, 0 }, image);
+    p.setTo({ 1, 0 }, std::make_shared<basicText>("\033[38;2;255;0;0mRed Text\033[0m"));
+    p.setTo({ 0, 1 }, std::make_shared<basicText>("Hello World!"));
+    p.setTo({ 2, 0 }, progressBar);
+    p.setTo({ 2, 1 }, multiLine);
     p.update();
 
     while (!progressBar->isDone()) {
@@ -79,17 +79,17 @@ int main() {
 
     auto space = make_shared<basicText>("   ");
 
-    p.setTo(0, 0, image);
-    p.setTo(0, 1, space);
-    p.setTo(0, 2, make_shared<basicImage>(bigChar('C')));
-    p.setTo(0, 3, space);
-    p.setTo(0, 4, make_shared<basicImage>(bigChar('G')));
-    p.setTo(0, 5, space);
-    p.setTo(0, 6, make_shared<basicImage>(bigChar('U')));
-    p.setTo(0, 7, space);
-    p.setTo(0, 8, make_shared<basicImage>(bigChar('I')));
-    p.setTo(0, 9, space);
-    p.setTo(0, 10, image);
+    p.setTo({ 0, 0 }, image);
+    p.setTo({ 0, 1 }, space);
+    p.setTo({ 0, 2 }, make_shared<basicImage>(bigChar('C')));
+    p.setTo({ 0, 3 }, space);
+    p.setTo({ 0, 4 }, make_shared<basicImage>(bigChar('G')));
+    p.setTo({ 0, 5 }, space);
+    p.setTo({ 0, 6 }, make_shared<basicImage>(bigChar('U')));
+    p.setTo({ 0, 7 }, space);
+    p.setTo({ 0, 8 }, make_shared<basicImage>(bigChar('I')));
+    p.setTo({ 0, 9 }, space);
+    p.setTo({ 0, 10 }, image);
     p.update();
 
     return 0;
