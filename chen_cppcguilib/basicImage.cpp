@@ -1,39 +1,57 @@
 #include "basicImage.h"
 #include<vector>
+#include <regex>
 using namespace std;
 
-basicImage::basicImage(vector<string> x)
+basicImage::basicImage(const vector<string>& image)
+	: image(image)
 {
-	image = x;
+	checkImage();
+	calculateWidth();
 }
 
-string basicImage::selfDraw()
+int basicImage::getWidth() const
 {
-	string ret = "";
-	for (auto kv : image)
-		ret = ret + kv + "\n";
-	return ret;
+	return width;
 }
 
-string basicImage::getOneLine(int lineNumber)
-{
-	return image[lineNumber - 1];
-}
-
-int basicImage::getTotalLines()
+int basicImage::getHeight() const
 {
 	return image.size();
 }
 
-int basicImage::getMaxLineLength()
+std::vector<std::string> basicImage::getData() const
 {
-	size_t maxLength = 0;
-	for (auto kv : image)
-		maxLength = max(kv.length(), maxLength);
-	return maxLength;
+	return image;
 }
 
-void basicImage::changeImage(vector<string> x)
+void basicImage::setImage(const std::vector<std::string>& image)
 {
-	image = x;
+	this->image = image;
+	checkImage();
+	calculateWidth();
+}
+
+void basicImage::checkImage()
+{
+	// 检查字符串，将换行符替换成' '
+	for (auto& line : image) {
+		for (char& c : line) {
+			if (c == '\n') {
+				c = ' ';
+			}
+		}
+	}
+}
+
+void basicImage::calculateWidth()
+{
+	width = 0;
+	std::regex ansiEscape(R"(\x1B\[[0-9;]*[A-Za-z])");
+	for (const auto& line : image)
+	{
+		// 移除ANSI转义序列
+		std::string cleanLine = std::regex_replace(line, ansiEscape, "");
+		width = std::max(cleanLine.length(), width);
+	}
 }

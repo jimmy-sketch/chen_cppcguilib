@@ -2,37 +2,41 @@
 #include"basicImage.h"
 #include"basicProgressBar.h"
 #include"basicText.h"
-#include<algorithm>
-#include<iostream>
-#include<map>
+#include <map>
 #include <memory>
-using namespace std;
+#include <string>
+#include <vector>
 
-enum thingType{image,text,progressBar};
-
-struct thingMapper
-{
-	pair<int, thingType> mapper;
-	int row, column;
-	thingMapper(pair<int, thingType> x, int row, int column);
+struct pos {
+    int row, col;
 };
-//typedef pair<int, thingType> thingMapper;
-//first代表这一个控件在单独的控件列表中的下标
+static bool operator<(const pos& lhs, const pos& rhs) {
+    return (lhs.row < rhs.row) || (lhs.row == rhs.row && lhs.col < rhs.col);
+}
 
-//重要函数：刷新、呈现控件内容
-string summonFrame();
-void refreshScreen();
+class page
+{
+public:
+    //重要函数：刷新、呈现控件内容
+    std::string toString();
+    void update();
 
+    //把某个控件放到...
+    void setTo(int row, int col, std::shared_ptr<component> src);
 
-//创建控件
-std::shared_ptr<basicImage>  createImage(int row, int column, vector<string> imageByLine);
-std::shared_ptr<basicText>   createText(int row, int column, string text);
-std::shared_ptr<basicProgressBar>  createProgressBar(int row, int column, int Length);
-//更改控件
-void  changeImage(std::shared_ptr<basicImage> youwant, vector<string> imageByLine);
-void  changeText(std::shared_ptr<basicText> youwant, string text);
-void  changeProgress(std::shared_ptr<basicProgressBar> youwant, int progress);
+    //清空控件
+    void clear();
 
-//一些其他函数……
-//排版相关
-template<typename T> void changeLocation(thingType type, shared_ptr<T> thing, int row, int column);
+private:
+    std::map<pos, std::shared_ptr<component>> components;
+    // 获得组件上方一个组件的高
+    int getUpperComponentHeight(const pos& current);
+    // 获得组件上方所有组件的高的总和
+    int getAboveComponentHeight(const pos& current);
+    // 获得左边组件的宽
+    int getLeftComponentWidth(const pos& current);
+    // 获得左边所有低于自身组件的宽，碰到同行的也停止
+    int getAllLeftComponentWidth(const pos& current, int row);
+    // 获得左边组件的高
+    int getLeftComponentHeight(const pos& current);
+};
