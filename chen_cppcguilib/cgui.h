@@ -2,6 +2,7 @@
 #include"basicImage.h"
 #include"basicProgressBar.h"
 #include"basicText.h"
+#include"multiLineText.h"
 #include <map>
 #include <memory>
 #include <string>

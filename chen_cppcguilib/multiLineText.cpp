@@ -15,6 +15,11 @@ int multiLineText::getHeight() const
     return textByLine.size();
 }
 
+std::vector<std::string> multiLineText::getData() const
+{
+    return this->textByLine;
+}
+
 void multiLineText::setMultiText(std::vector<std::string> textByLine)
 {
     this->textByLine = textByLine;
