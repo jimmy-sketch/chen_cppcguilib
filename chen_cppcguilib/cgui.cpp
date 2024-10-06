@@ -1,59 +1,6 @@
 #include"cgui.h"
-#include <map>
 using namespace std;
 
-struct pos {
-    int row, col;
-};
-static bool operator<(const pos& lhs, const pos& rhs) {
-    return (lhs.row < rhs.row) || (lhs.row == rhs.row && lhs.col < rhs.col);
-}
-map<pos, shared_ptr<component>> components;
-
-// »ñµÃ×é¼şÉÏ·½Ò»¸ö×é¼şµÄ¸ß
-static int getUpperComponentHeight(const pos& current) {
-    pos upper = { current.row - 1, current.col };
-    auto it = components.find(upper);
-    if (it != components.end()) {
-        return it->second->getHeight();
-    }
-    return 0;
-}
-
-// »ñµÃ×é¼şÉÏ·½ËùÓĞ×é¼şµÄ¸ßµÄ×ÜºÍ
-static int getAboveComponentHeight(const pos& current) {
-    pos upper = current;
-    int h = getUpperComponentHeight(upper);
-    int ret = h;
-    while (h != 0) {
-        upper = { upper.row - 1, upper.col };
-        h = getUpperComponentHeight(upper);
-        ret += h;
-    }
-    return ret;
-}
-
-// »ñµÃ×ó±ß×é¼şµÄ¿í
-static int getLeftComponentWidth(const pos& current) {
-    pos left = { current.row, current.col - 1 };
-    auto it = components.find(left);
-    if (it != components.end()) {
-        return it->second->getWidth();
-    }
-    return 0;
-}
-
-// »ñµÃ×ó±ß×é¼şµÄ¸ß
-static int getLeftComponentHeight(const pos& current) {
-    pos left = { current.row, current.col - 1 };
-    auto it = components.find(left);
-    if (it != components.end()) {
-        return it->second->getHeight();
-    }
-    return 0;
-}
-
-// targetµÄ³¤¶ÈÒ»Ö±¼Óµ½n
 static void addNewLinesTo(vector<vector<string>>& target, int n) {
     if (n > target.size()) {
         for (int i = 0; i < n - target.size(); ++i) {
@@ -62,7 +9,7 @@ static void addNewLinesTo(vector<vector<string>>& target, int n) {
     }
 }
 
-string summonFrame()
+string page::summonFrame()
 {
     vector<vector<string>> lines;
     for (auto& c : components) {
@@ -71,15 +18,15 @@ string summonFrame()
         for (int l = 0; l < c.second->getHeight(); ++l) {
             addNewLinesTo(lines, row + l + 1);
             auto str = c.second->getData()[l];
-            // Èç¹û×ó±ß¶Ì£¬ÓÒ±ß³¤£¬ÓÒ±ßÓ¦¸Ã²¹ÆëÒ»Ğ©¿Õ¸ñ
-            // Í¬Ê±Ò²Òª×¢Òâ£¬×óÓÒÍ¬Ê±Õ¼ĞĞµÄ²¿·ÖÖĞ¼ä²»Òª¼Ó¿Õ¸ñ
+            // å¦‚æœå·¦è¾¹çŸ­ï¼Œå³è¾¹é•¿ï¼Œå³è¾¹åº”è¯¥è¡¥é½ä¸€äº›ç©ºæ ¼
+            // åŒæ—¶ä¹Ÿè¦æ³¨æ„ï¼Œå·¦å³åŒæ—¶å è¡Œçš„éƒ¨åˆ†ä¸­é—´ä¸è¦åŠ ç©ºæ ¼
             int h = getLeftComponentHeight(c.first);
             if (h != 0 && h < c.second->getHeight() && l >= h) {
-                str.insert(0, getLeftComponentWidth(c.first), ' ');
+                str.insert(0, getAllLeftComponentWidth(c.first, l), ' ');
             }
             lines[row + l].push_back(str);
         }
-        // ÒÔºó¼ÓÈë×é¼ş¼ä¾à
+        // ä»¥ååŠ å…¥ç»„ä»¶é—´è·
     }
     string ret = "";
     for (auto& line : lines) {
@@ -91,41 +38,90 @@ string summonFrame()
     return ret;
 }
 
-void refreshScreen()
+void page::refreshScreen()
 {
     system("cls");
     cout << summonFrame();
 }
 
-template<class T, class...Args>
-shared_ptr<T> set(pos pos, Args...args)
-{
-    auto ret = make_shared<T>(args...);
-    components[pos] = ret;
-    refreshScreen();
-    return ret;
-}
-shared_ptr<basicImage>  setImage(int row, int col, vector<string> imageByLine)  { return set<basicImage>({ row,col }, imageByLine); }
-shared_ptr<basicText>  setText(int row, int col, string text)			    	{ return set<basicText>({ row,col }, text); }
-shared_ptr<basicProgressBar>  setProgressBar(int row, int col, int len)		    { return set<basicProgressBar>({ row,col }, len, 0); }
+shared_ptr<basicImage>  page::setImage(int row, int col, vector<string> imageByLine)  { return set<basicImage>({ row,col }, imageByLine); }
+shared_ptr<basicText>  page::setText(int row, int col, string text)			    	  { return set<basicText>({ row,col }, text); }
+shared_ptr<basicProgressBar>  page::setProgressBar(int row, int col, int len)		  { return set<basicProgressBar>({ row,col }, len, 0); }
 
-void setTo(int row, int col, std::shared_ptr<component> src)
+void page::setTo(int row, int col, std::shared_ptr<component> src)
 {
     components[{ row, col }] = src;
+    refreshScreen();
 }
 
-void modifyImage(shared_ptr<basicImage> target, vector<string> imageByLine)
+void page::modifyImage(shared_ptr<basicImage> src, vector<string> imageByLine)
 {
-    target->setImage(imageByLine);
+    src->setImage(imageByLine);
     refreshScreen();
 }
-void modifyText(shared_ptr<basicText> target, string text)
+
+void page::modifyText(shared_ptr<basicText> src, string text)
 {
-    target->setText(text);
+    src->setText(text);
     refreshScreen();
 }
-void updateProgress(shared_ptr<basicProgressBar> target, int progress)
+
+void page::updateProgress(shared_ptr<basicProgressBar> src, int progress)
 {
-    target->updateProgress(progress);
+    src->updateProgress(progress);
     refreshScreen();
+}
+
+int page::getUpperComponentHeight(const pos& current) {
+    pos upper = { current.row - 1, current.col };
+    auto it = components.find(upper);
+    if (it != components.end()) {
+        return it->second->getHeight();
+    }
+    return 0;
+}
+
+int page::getAboveComponentHeight(const pos& current) {
+    pos upper = current;
+    int h = getUpperComponentHeight(upper);
+    int ret = h;
+    while (h != 0) {
+        upper = { upper.row - 1, upper.col };
+        h = getUpperComponentHeight(upper);
+        ret += h;
+    }
+    return ret;
+}
+
+int page::getLeftComponentWidth(const pos& current) {
+    pos left = { current.row, current.col - 1 };
+    auto it = components.find(left);
+    if (it != components.end()) {
+        return it->second->getWidth();
+    }
+    return 0;
+}
+
+int page::getAllLeftComponentWidth(const pos& current, int row)
+{
+    pos left = current;
+    int ret = 0;
+    while (true) {
+        int h = getLeftComponentHeight(left);
+        if (h == 0 || row < h) {
+            break;
+        }
+        left = { left.row, left.col - 1 };
+        ret += components[left]->getWidth();
+    }
+    return ret;
+}
+
+int page::getLeftComponentHeight(const pos& current) {
+    pos left = { current.row, current.col - 1 };
+    auto it = components.find(left);
+    if (it != components.end()) {
+        return it->second->getHeight();
+    }
+    return 0;
 }

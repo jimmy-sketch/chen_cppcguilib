@@ -3,6 +3,8 @@
 #include <thread>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#define STB_TRUETYPE_IMPLEMENTATION
+#include "stb_truetype.h"
 using namespace std;
 
 static vector<string> getImageByLines(const std::string& imageFile) {
@@ -28,18 +30,49 @@ static vector<string> getImageByLines(const std::string& imageFile) {
     return lines;
 }
 
+stbtt_fontinfo font;
+unsigned char ttf_buffer[1 << 25];
+static vector<string> bigChar(char c) {
+    int w = 0, h = 0, s = 20;
+    unsigned char* bitmap = stbtt_GetCodepointBitmap(&font, 0, stbtt_ScaleForPixelHeight(&font, s), c, &w, &h, 0, 0);
+    std::vector<string> image;
+    for (int j = 0; j < h; ++j) {
+        string str = "";
+        for (int i = 0; i < w; ++i)
+            str += " .:ioVM@"[bitmap[j * w + i] >> 5];
+        image.push_back(str);
+    }
+    return image;
+}
+
 int main() {
-    auto image = setImage(0, 0, getImageByLines("apple.png"));
-    auto text = setText(0, 1, "Hello World!");
-    auto text2 = setText(1, 0, "\033[38;2;255;0;0mRed Text\033[0m");
-    auto progressBar = setProgressBar(2, 0, 10);
+    FILE* f = nullptr;
+    fopen_s(&f, "simhei.ttf", "rb");
+    fread(ttf_buffer, 1, static_cast<size_t>(1) << 25, f);
+    stbtt_InitFont(&font, ttf_buffer, stbtt_GetFontOffsetForIndex(ttf_buffer, 0));
+
+    page p;
+    auto image = p.setImage(0, 0, getImageByLines("apple.png"));
+    auto text = p.setText(0, 1, "Hello World!");
+    auto text2 = p.setText(1, 0, "\033[38;2;255;0;0mRed Text\033[0m");
+    auto progressBar = p.setProgressBar(2, 0, 10);
 
     while (!progressBar->isDone()) {
         this_thread::sleep_for(200ms);
-        updateProgress(progressBar, progressBar->getProgress() + 10);
+        p.updateProgress(progressBar, progressBar->getProgress() + 10);
     }
-    modifyImage(image, getImageByLines("diamond_sword.png"));
-    setTo(0, 2, image);
-    modifyText(text, "\033[5mHello CGUI!\033[0m"); // 以后改成跨多行的大字符串
+    p.modifyImage(image, getImageByLines("diamond_sword.png"));
+    auto space = p.setText(0, 1, "  ");
+    p.setImage(0, 2, bigChar('C'));
+    p.setTo(0, 3, space);
+    p.setImage(0, 4, bigChar('G'));
+    p.setTo(0, 5, space);
+    p.setImage(0, 6, bigChar('U'));
+    p.setTo(0, 7, space);
+    p.setImage(0, 8, bigChar('I'));
+    p.setTo(0, 9, space);
+    p.setTo(0, 10, image);
+    p.setTo(1, 0, space);
+    p.setTo(2, 0, space);
     return 0;
 }
