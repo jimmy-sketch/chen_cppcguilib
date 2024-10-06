@@ -65,7 +65,7 @@ int main() {
     p.setTo(1, 0, std::make_shared<basicText>("\033[38;2;255;0;0mRed Text\033[0m"));
     p.setTo(0, 1, std::make_shared<basicText>("Hello World!"));
     p.setTo(2, 0, progressBar);
-    p.setTo(3, 0, multiLine);
+    p.setTo(2, 1, multiLine);
     p.update();
 
     while (!progressBar->isDone()) {

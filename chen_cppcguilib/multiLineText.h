@@ -1,5 +1,6 @@
 #pragma once
 #include "component.h"
+//多行文本相关类
 class multiLineText :
     public component
 {
