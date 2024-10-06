@@ -16,5 +16,5 @@ public:
 
 private:
 	int length, style, progress;
-	char startChar = '[', fillChar = '=', seqChar = '>', gapChar = ' ', endChar = ']';
+	char beginChar = '[', fillChar = '=', seqChar = '>', gapChar = ' ', endChar = ']';
 };
