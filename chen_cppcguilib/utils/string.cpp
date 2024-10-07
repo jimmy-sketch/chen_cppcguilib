@@ -5,9 +5,10 @@ using namespace cgui;
 
 static const std::string defaultColor = "\033[0m";
 
+string::string() {}
 string::string(const char* in) : str(in) { calculateVisibleLength(); }
 string::string(std::string_view in) : str(in) { calculateVisibleLength(); }
-string::string(int count, char c) : str(count, c) {}
+string::string(int count, char c) : str(count, c) { calculateVisibleLength(); }
 
 size_t string::size() const { return str.size(); }
 int string::length() const { return visibleLength; }
@@ -71,6 +72,18 @@ void cgui::string::operator+=(char other)
     visibleLength += 1;
 }
 
+void cgui::string::operator=(const string& other)
+{
+    str = other.str;
+    visibleLength = other.visibleLength;
+}
+
+void cgui::string::operator=(std::string_view other)
+{
+    str = other;
+    calculateVisibleLength();
+}
+
 const char* cgui::string::data() const
 {
     return str.data();
@@ -98,4 +111,14 @@ void string::calculateVisibleLength() {
     // ´¦Àíunicode×Ö·û
     // todo
     visibleLength = cleanLine.size();
+}
+
+string cgui::operator+(std::string_view lhs, string& rhs)
+{
+    return string(lhs) + rhs;
+}
+
+string cgui::operator+(std::string_view lhs, string&& rhs)
+{
+    return string(lhs) + rhs;
 }

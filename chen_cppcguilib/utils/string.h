@@ -20,6 +20,7 @@ namespace cgui {
 // 
 class string {
 public:
+    string();
     string(const char* in);
     string(std::string_view in);
     string(int count, char c);
@@ -41,6 +42,8 @@ public:
     string& operator+(char other);
     void operator+=(const string& other);
     void operator+=(char other);
+    void operator=(const string& other);
+    void operator=(std::string_view other);
 
     const char* data() const;
 
@@ -52,5 +55,7 @@ private:
     int pushBackPos() const; // 如果有颜色，pos会在最后一个恢复默认颜色之前
     void calculateVisibleLength();
 };
+string operator+(std::string_view lhs, string& rhs);
+string operator+(std::string_view lhs, string&& rhs);
 
 }

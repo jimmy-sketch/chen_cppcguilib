@@ -14,34 +14,39 @@ struct logicPos {
 static bool operator<(logicPos lhs, logicPos rhs) {
     return (lhs.row < rhs.row) || (lhs.row == rhs.row && lhs.col < rhs.col);
 }
+static bool operator==(logicPos lhs, logicPos rhs) {
+    return (lhs.row == rhs.row) && (lhs.col == rhs.col);
+}
 
 class page
 {
 public:
-    //ÖØÒªº¯Êı£ºË¢ĞÂ¡¢³ÊÏÖ¿Ø¼şÄÚÈİ
+    page(bool enableSelect);
+
+    //é‡è¦å‡½æ•°ï¼šåˆ·æ–°ã€å‘ˆç°æ§ä»¶å†…å®¹
     std::string toString();
     void update();
 
-    //°ÑÄ³¸ö¿Ø¼ş·Åµ½...
+    //æŠŠæŸä¸ªæ§ä»¶æ”¾åˆ°...
     void setTo(logicPos pos, std::shared_ptr<component> src);
 
-    //Çå¿Õ¿Ø¼ş
+    //åˆ é™¤æŸä¸ªæ§ä»¶
+    void erase(logicPos pos);
+
+    //æ¸…ç©ºæ§ä»¶
     void clear();
+
+    //å¯ç”¨æ§ä»¶é€‰æ‹©
+    void setEnableSelect(bool v);
+
+    //é€‰æ‹©æ§ä»¶
+    void select(logicPos pos);
 
 private:
     std::map<logicPos, std::shared_ptr<component>> components;
-    // »ñµÃ×é¼şÉÏ·½Ò»¸ö×é¼şµÄ¸ß
-    int getUpperComponentHeight(logicPos current);
-    // »ñµÃ×é¼şÉÏ·½ËùÓĞ×é¼şµÄ¸ßµÄ×ÜºÍ
-    int getAboveComponentHeight(logicPos current);
-    // »ñµÃ×ó±ß×é¼şµÄ¿í
-    int getLeftComponentWidth(logicPos current);
-    // »ñµÃ×ó±ßËùÓĞµÍÓÚ×ÔÉí×é¼şµÄ¿í£¬Åöµ½Í¬ĞĞµÄÒ²Í£Ö¹
-    int getAllLeftComponentWidth(logicPos current, int row);
-    // »ñµÃ×ó±ß×é¼şµÄ¸ß
-    int getLeftComponentHeight(logicPos current);
-    // ÕÒ×î½üµÄ´æÔÚµÄ×é¼ş£¬y±íÊ¾Ã¿´ÎÏòÏÂ×ß¸ñÊı£¬x±íÊ¾Ã¿´ÎÏòÓÒ×ß¸ñÊı£¬¿ÉÒÔÎª¸º£¬ÓĞÔò·µ»ØÎ»ÖÃ£¬ÎŞÔò·µ»Ø-1,-1
-    logicPos findNearestComponent(logicPos current, int y, int x);
-    // ÅĞ¶ÏÎ»ÖÃÊÇ²»ÊÇ²»ºÏÀíµÄ
-    bool isBadLogicPos(logicPos pos);
+    std::map<int, int> lineWidthList;
+    std::map<int, int> lineHeightList;
+
+    logicPos selectedPos = { 0, 0 };
+    bool enableSelect;
 };
