@@ -1,6 +1,6 @@
 #include "multiLineText.h"
 
-multiLineText::multiLineText(std::vector<std::string> textByLine)
+multiLineText::multiLineText(std::vector<cgui::string> textByLine)
 {
     this->textByLine = textByLine;
 }
@@ -15,12 +15,12 @@ int multiLineText::getHeight() const
     return textByLine.size();
 }
 
-std::vector<std::string> multiLineText::getData() const
+std::vector<cgui::string> multiLineText::getData() const
 {
-    return this->textByLine;
+    return textByLine;
 }
 
-void multiLineText::setMultiText(std::vector<std::string> textByLine)
+void multiLineText::setMultiText(std::vector<cgui::string> textByLine)
 {
     this->textByLine = textByLine;
 }

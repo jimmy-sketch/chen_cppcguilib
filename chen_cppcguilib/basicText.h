@@ -1,21 +1,16 @@
 #pragma once
-#include<iostream>
-#include<string>
 #include "component.h"
 
 class basicText : public component
 {
 public:
-    basicText(const std::string& str);
+    basicText(std::string_view str);
     int getWidth() const override;
     int getHeight() const override;
-    std::vector<std::string> getData() const override;
+    std::vector<cgui::string> getData() const override;
     
-    void setText(const std::string& str);
+    void setText(std::string_view str);
 
 private:
-    std::string text;
-    size_t width;
-    void checkText();
-    void calculateWidth();
+    cgui::string text;
 };

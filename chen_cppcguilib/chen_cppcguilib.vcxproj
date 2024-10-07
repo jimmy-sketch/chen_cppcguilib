@@ -139,6 +139,7 @@
     <ClInclude Include="cgui.h" />
     <ClInclude Include="component.h" />
     <ClInclude Include="multiLineText.h" />
+    <ClInclude Include="utils\string.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="basicImage.cpp" />
@@ -146,6 +147,7 @@
     <ClCompile Include="basicText.cpp" />
     <ClCompile Include="cgui.cpp" />
     <ClCompile Include="multiLineText.cpp" />
+    <ClCompile Include="utils\string.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
