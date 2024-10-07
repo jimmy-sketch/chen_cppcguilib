@@ -1,14 +1,6 @@
 #include"cgui.h"
 #include <iostream>
 
-static void addNewLinesTo(std::vector<std::vector<cgui::string>>& target, int n) {
-    if (n > target.size()) {
-        for (int i = 0; i < n - target.size(); ++i) {
-            target.emplace_back();
-        }
-    }
-}
-
 std::string page::toString()
 {
     std::vector<std::vector<cgui::string>> lines;
