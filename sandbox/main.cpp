@@ -60,7 +60,11 @@ int main() {
 
     auto image = std::make_shared<basicImage>(getImageByLines("apple.png"));
     auto progressBar = std::make_shared<basicProgressBar>(10, 0);
-    std::vector<std::string> multiText = { "hello","world","CGUI!" };
+
+    std::vector<cgui::string> multiText = { "Red Red Red","Green Green Green","Blue Blue Blue" };
+    multiText[0].insertRGB(0, 255, 0, 0);
+    multiText[1].insertRGB(0, 0, 255, 0);
+    multiText[2].insertRGB(0, 0, 0, 255);
     auto multiLine = std::make_shared<multiLineText>(multiText);
 
     p.setTo({ 0, 0 }, image);

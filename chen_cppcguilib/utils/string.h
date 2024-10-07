@@ -16,6 +16,7 @@ namespace cgui {
 // 解决Unicode字符占用长度和显示长度不一致问题
 // 
 // 可直接插入rgb，会自动转成ascii序列
+// 末尾会自动恢复默认颜色
 // 
 // 不会包含换行符，\n会变成空格
 // 
@@ -48,7 +49,9 @@ public:
 private:
     std::string str;
     int visibleLength = 0;
+    int colorCount = 0; // 用于颜色的ascii转义字符数量
 
+    int pushBackPos() const; // 如果有颜色，pos会在最后一个恢复默认颜色之前
     void calculateVisibleLength();
 };
 
