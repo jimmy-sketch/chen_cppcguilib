@@ -14,25 +14,39 @@ struct logicPos {
 static bool operator<(logicPos lhs, logicPos rhs) {
     return (lhs.row < rhs.row) || (lhs.row == rhs.row && lhs.col < rhs.col);
 }
+static bool operator==(logicPos lhs, logicPos rhs) {
+    return (lhs.row == rhs.row) && (lhs.col == rhs.col);
+}
 
 class page
 {
 public:
-    //ÖØÒªº¯Êı£ºË¢ĞÂ¡¢³ÊÏÖ¿Ø¼şÄÚÈİ
+    page(bool enableSelect);
+
+    //é‡è¦å‡½æ•°ï¼šåˆ·æ–°ã€å‘ˆç°æ§ä»¶å†…å®¹
     std::string toString();
     void update();
 
-    //°ÑÄ³¸ö¿Ø¼ş·Åµ½...
+    //æŠŠæŸä¸ªæ§ä»¶æ”¾åˆ°...
     void setTo(logicPos pos, std::shared_ptr<component> src);
 
-    //É¾³ıÄ³¸ö¿Ø¼ş
+    //åˆ é™¤æŸä¸ªæ§ä»¶
     void erase(logicPos pos);
 
-    //Çå¿Õ¿Ø¼ş
+    //æ¸…ç©ºæ§ä»¶
     void clear();
+
+    //å¯ç”¨æ§ä»¶é€‰æ‹©
+    void setEnableSelect(bool v);
+
+    //é€‰æ‹©æ§ä»¶
+    void select(logicPos pos);
 
 private:
     std::map<logicPos, std::shared_ptr<component>> components;
     std::map<int, int> lineWidthList;
     std::map<int, int> lineHeightList;
+
+    logicPos selectedPos = { 0, 0 };
+    bool enableSelect;
 };

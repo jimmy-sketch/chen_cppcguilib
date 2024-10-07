@@ -1,10 +1,34 @@
 #include"cgui.h"
 #include <iostream>
 
+static std::vector<cgui::string> outlineComponent(std::shared_ptr<component> c) {
+    std::vector<cgui::string> ret;
+    ret.push_back("+" + cgui::string(c->getWidth(), '-') + "+");
+    for (auto& line : c->getData()) {
+        ret.push_back("|" + line + "|");
+    }
+    ret.push_back("+" + cgui::string(c->getWidth(), '-') + "+");
+    return ret;
+}
+
+page::page(bool enableSelect)
+    : enableSelect(enableSelect)
+{}
+
 std::string page::toString()
 {
     std::vector<std::vector<cgui::string>> lines;
-    for (auto& [pos, c] : components) {
+
+    if (enableSelect) {
+        lineHeightList[selectedPos.row] = std::max(lineHeightList[selectedPos.row], components[selectedPos]->getHeight() + 2);
+        lineWidthList[selectedPos.col] = std::max(lineWidthList[selectedPos.col], components[selectedPos]->getWidth() + 2);
+    }
+
+    for (auto [pos, c] : components) {
+        if (enableSelect && pos == selectedPos) {
+            c = std::make_shared<basicImage>(outlineComponent(c));
+        }
+
         int height = c->getHeight();
         int width = c->getWidth();
         auto data = c->getData();
@@ -28,6 +52,19 @@ std::string page::toString()
             }
             else {
                 lines[yOffset + i].push_back(cgui::string(lineWidth, ' '));
+            }
+        }
+    }
+
+    if (enableSelect) {
+        lineHeightList[selectedPos.row] = 0;
+        lineWidthList[selectedPos.col] = 0;
+        for (auto& [p, c] : components) {
+            if (p.col == selectedPos.col) {
+                lineWidthList[selectedPos.col] = std::max(lineWidthList[selectedPos.col], c->getWidth());
+            }
+            if (p.row == selectedPos.row) {
+                lineHeightList[selectedPos.row] = std::max(lineHeightList[selectedPos.row], c->getHeight());
             }
         }
     }
@@ -75,4 +112,14 @@ void page::clear()
     components.clear();
     lineHeightList.clear();
     lineWidthList.clear();
+}
+
+void page::setEnableSelect(bool v)
+{
+    enableSelect = v;
+}
+
+void page::select(logicPos pos)
+{
+    selectedPos = pos;
 }
