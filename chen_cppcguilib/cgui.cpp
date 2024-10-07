@@ -55,6 +55,21 @@ void page::setTo(logicPos pos, std::shared_ptr<component> src)
     lineHeightList[pos.row] = std::max(lineHeightList[pos.row], src->getHeight());
 }
 
+void page::erase(logicPos pos)
+{
+    components.erase(pos);
+    lineWidthList[pos.col] = 0;
+    lineHeightList[pos.row] = 0;
+    for (auto& [p, c] : components) {
+        if (p.col == pos.col) {
+            lineWidthList[pos.col] = std::max(lineWidthList[pos.col], c->getWidth());
+        }
+        if (p.row == pos.row) {
+            lineHeightList[pos.row] = std::max(lineHeightList[pos.row], c->getHeight());
+        }
+    }
+}
+
 void page::clear()
 {
     components.clear();

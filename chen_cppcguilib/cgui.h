@@ -25,6 +25,9 @@ public:
     //把某个控件放到...
     void setTo(logicPos pos, std::shared_ptr<component> src);
 
+    //删除某个控件
+    void erase(logicPos pos);
+
     //清空控件
     void clear();
 
