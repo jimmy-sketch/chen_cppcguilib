@@ -34,9 +34,9 @@ void string::operator+=(const string& other) {
     visibleLength += other.visibleLength;
 }
 
-cgui::string::operator const std::string&()
+const char* cgui::string::data() const
 {
-    return str;
+    return str.data();
 }
 
 void string::calculateVisibleLength() {
@@ -49,5 +49,6 @@ void string::calculateVisibleLength() {
     std::regex ansiEscape(R"(\x1B\[[0-9;]*[A-Za-z])");
     std::string cleanLine = std::regex_replace(str, ansiEscape, "");
     // ´¦Àíunicode×Ö·û
-    
+    // todo
+    visibleLength = cleanLine.size();
 }

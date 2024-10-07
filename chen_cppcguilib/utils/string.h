@@ -37,7 +37,7 @@ public:
     string& operator+(const string& other);
     void operator+=(const string& other);
 
-    operator const std::string&();
+    const char* data() const;
 
 private:
     std::string str;
