@@ -9,7 +9,12 @@ basicProgressBar::basicProgressBar(int _length, int _style)
 
 int basicProgressBar::getWidth() const
 {
-	return length;
+	if (progress < 10)
+		return length + 2;
+	if (progress < 100)
+		return length + 3;
+	if (this->isDone())
+		return length + 4;
 }
 
 int basicProgressBar::getHeight() const
@@ -21,6 +26,7 @@ std::vector<cgui::string> basicProgressBar::getData() const
 {
 	std::string ret = "";
 	int fillCount = (int)((double)progress * (double)(length - 2) / 100.0);
+	ret = ret + std::to_string(this->progress) + "%";
 	ret += beginChar;
 	for (int i = 0; i < length - 2; ++i) {
 		if (i < fillCount) {
