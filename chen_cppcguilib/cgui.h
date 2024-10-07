@@ -30,18 +30,6 @@ public:
 
 private:
     std::map<logicPos, std::shared_ptr<component>> components;
-    // 获得组件上方一个组件的高
-    int getUpperComponentHeight(logicPos current);
-    // 获得组件上方所有组件的高的总和
-    int getAboveComponentHeight(logicPos current);
-    // 获得左边组件的宽
-    int getLeftComponentWidth(logicPos current);
-    // 获得左边所有低于自身组件的宽，碰到同行的也停止
-    int getAllLeftComponentWidth(logicPos current, int row);
-    // 获得左边组件的高
-    int getLeftComponentHeight(logicPos current);
-    // 找最近的存在的组件，y表示每次向下走格数，x表示每次向右走格数，可以为负，有则返回位置，无则返回-1,-1
-    logicPos findNearestComponent(logicPos current, int y, int x);
-    // 判断位置是不是不合理的
-    bool isBadLogicPos(logicPos pos);
+    std::map<int, int> lineWidthList;
+    std::map<int, int> lineHeightList;
 };

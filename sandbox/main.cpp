@@ -75,7 +75,7 @@ int main() {
     p.update();
 
     while (!progressBar->isDone()) {
-        std::this_thread::sleep_for(200ms);
+        std::this_thread::sleep_for(500ms);
         progressBar->updateProgress(progressBar->getProgress() + 10);
         p.update();
     }
