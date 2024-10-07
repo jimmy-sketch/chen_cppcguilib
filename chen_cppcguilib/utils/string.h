@@ -31,11 +31,17 @@ public:
     void insert(int pos, const string& other);
     void insert(int pos, int count, char c);
 
+    void pushBackDefaultRGB();
+    void insertDefaultRGB(int pos);
     void pushBackRGB(int r, int g, int b);
     void insertRGB(int pos, int r, int g, int b);
+    void pushBackBackgroundRGB(int r, int g, int b);
+    void insertBackgroundRGB(int pos, int r, int g, int b);
     
     string& operator+(const string& other);
+    string& operator+(char other);
     void operator+=(const string& other);
+    void operator+=(char other);
 
     const char* data() const;
 

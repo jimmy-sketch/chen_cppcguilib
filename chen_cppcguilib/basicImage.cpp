@@ -1,12 +1,10 @@
 #include "basicImage.h"
 #include<vector>
 #include <regex>
-using namespace std;
 
-basicImage::basicImage(const vector<string>& image)
+basicImage::basicImage(const std::vector<cgui::string>& image)
 	: image(image)
 {
-	checkImage();
 	calculateWidth();
 }
 
@@ -22,36 +20,23 @@ int basicImage::getHeight() const
 
 std::vector<std::string> basicImage::getData() const
 {
-	return image;
+	std::vector<std::string> ret;
+	for (auto& line : image) {
+		ret.push_back(line.data());
+	}
+	return ret;
 }
 
-void basicImage::setImage(const std::vector<std::string>& image)
+void basicImage::setImage(const std::vector<cgui::string>& image)
 {
 	this->image = image;
-	checkImage();
 	calculateWidth();
-}
-
-void basicImage::checkImage()
-{
-	// 检查字符串，将换行符替换成' '
-	for (auto& line : image) {
-		for (char& c : line) {
-			if (c == '\n') {
-				c = ' ';
-			}
-		}
-	}
 }
 
 void basicImage::calculateWidth()
 {
 	width = 0;
-	std::regex ansiEscape(R"(\x1B\[[0-9;]*[A-Za-z])");
-	for (const auto& line : image)
-	{
-		// 移除ANSI转义序列
-		std::string cleanLine = std::regex_replace(line, ansiEscape, "");
-		width = std::max(cleanLine.length(), width);
+	for (auto& line : image) {
+		width = std::max(line.length(), width);
 	}
 }

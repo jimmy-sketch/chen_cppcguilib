@@ -5,25 +5,27 @@
 #include "stb_image.h"
 #define STB_TRUETYPE_IMPLEMENTATION
 #include "stb_truetype.h"
-using namespace std;
 
-static vector<string> getImageByLines(const std::string& imageFile) {
-    vector<string> lines;
+using namespace std::literals;
+
+static std::vector<cgui::string> getImageByLines(std::string_view imageFile) {
+    std::vector<cgui::string> lines;
     int width = 0, height = 0, channels = 0;
-    auto pixels = stbi_load(imageFile.c_str(), &width, &height, &channels, STBI_rgb_alpha);
+    auto pixels = stbi_load(imageFile.data(), &width, &height, &channels, STBI_rgb_alpha);
     for (int y = 0; y < height; ++y) {
-        string line = "";
+        cgui::string line = "";
         for (int x = 0; x < width; ++x) {
             int i = (y * width + x) * channels;
             int r = pixels[i], g = pixels[i + 1], b = pixels[i + 2], a = pixels[i + 3];
             if (a < 128) {
-                line += " ";
+                line.pushBackDefaultRGB();
             }
             else {
-                line += "\033[38;2;" + to_string(r) + ";" + to_string(g) + ";" + to_string(b) + "m¨€";
+                line.pushBackBackgroundRGB(r, g, b);
             }
+            line += " ";
         }
-        line += "\033[0m";
+        line.pushBackDefaultRGB();
         lines.push_back(line);
     }
     stbi_image_free(pixels);
@@ -32,12 +34,12 @@ static vector<string> getImageByLines(const std::string& imageFile) {
 
 stbtt_fontinfo font;
 unsigned char ttf_buffer[1 << 25];
-static vector<string> bigChar(char c) {
+static std::vector<cgui::string> bigChar(char c) {
     int w = 0, h = 0, s = 20;
     unsigned char* bitmap = stbtt_GetCodepointBitmap(&font, 0, stbtt_ScaleForPixelHeight(&font, s), c, &w, &h, 0, 0);
-    std::vector<string> image;
+    std::vector<cgui::string> image;
     for (int j = 0; j < h; ++j) {
-        string str = "";
+        cgui::string str = "";
         for (int i = 0; i < w; ++i)
             str += " .:ioVM@"[bitmap[j * w + i] >> 5];
         image.push_back(str);
@@ -58,7 +60,7 @@ int main() {
 
     auto image = std::make_shared<basicImage>(getImageByLines("apple.png"));
     auto progressBar = std::make_shared<basicProgressBar>(10, 0);
-    vector<string> multiText = { "hello","world","CGUI!" };
+    std::vector<std::string> multiText = { "hello","world","CGUI!" };
     auto multiLine = std::make_shared<multiLineText>(multiText);
 
     p.setTo({ 0, 0 }, image);
@@ -69,7 +71,7 @@ int main() {
     p.update();
 
     while (!progressBar->isDone()) {
-        this_thread::sleep_for(200ms);
+        std::this_thread::sleep_for(200ms);
         progressBar->updateProgress(progressBar->getProgress() + 10);
         p.update();
     }
@@ -77,17 +79,17 @@ int main() {
 
     p.clear();
 
-    auto space = make_shared<basicText>("   ");
+    auto space = std::make_shared<basicText>("   ");
 
     p.setTo({ 0, 0 }, image);
     p.setTo({ 0, 1 }, space);
-    p.setTo({ 0, 2 }, make_shared<basicImage>(bigChar('C')));
+    p.setTo({ 0, 2 }, std::make_shared<basicImage>(bigChar('C')));
     p.setTo({ 0, 3 }, space);
-    p.setTo({ 0, 4 }, make_shared<basicImage>(bigChar('G')));
+    p.setTo({ 0, 4 }, std::make_shared<basicImage>(bigChar('G')));
     p.setTo({ 0, 5 }, space);
-    p.setTo({ 0, 6 }, make_shared<basicImage>(bigChar('U')));
+    p.setTo({ 0, 6 }, std::make_shared<basicImage>(bigChar('U')));
     p.setTo({ 0, 7 }, space);
-    p.setTo({ 0, 8 }, make_shared<basicImage>(bigChar('I')));
+    p.setTo({ 0, 8 }, std::make_shared<basicImage>(bigChar('I')));
     p.setTo({ 0, 9 }, space);
     p.setTo({ 0, 10 }, image);
     p.update();
