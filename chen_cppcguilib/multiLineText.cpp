@@ -15,13 +15,9 @@ int multiLineText::getHeight() const
     return textByLine.size();
 }
 
-std::vector<std::string> multiLineText::getData() const
+std::vector<cgui::string> multiLineText::getData() const
 {
-    std::vector<std::string> ret;
-    for (auto& line : textByLine) {
-        ret.push_back(line.data());
-    }
-    return ret;
+    return textByLine;
 }
 
 void multiLineText::setMultiText(std::vector<cgui::string> textByLine)

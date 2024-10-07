@@ -1,12 +1,10 @@
 #pragma once
 #include <string>
-#include <regex>
 
 namespace cgui {
 
 // std::string造成的bug太多了，为了便于使用只好再封装一层
 // 这个string是为了控制台ui所专门设计的
-// 现有的代码并没有转用新string，以后会转成新string的
 // 
 // 功能如下：
 // 

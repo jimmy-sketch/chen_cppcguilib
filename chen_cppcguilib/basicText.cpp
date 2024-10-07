@@ -16,9 +16,9 @@ int basicText::getHeight() const
 	return 1;
 }
 
-std::vector<std::string> basicText::getData() const
+std::vector<cgui::string> basicText::getData() const
 {
-	return { text.data() };
+	return { text };
 }
 
 void basicText::setText(std::string_view str)

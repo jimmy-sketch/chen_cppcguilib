@@ -18,13 +18,9 @@ int basicImage::getHeight() const
 	return image.size();
 }
 
-std::vector<std::string> basicImage::getData() const
+std::vector<cgui::string> basicImage::getData() const
 {
-	std::vector<std::string> ret;
-	for (auto& line : image) {
-		ret.push_back(line.data());
-	}
-	return ret;
+	return image;
 }
 
 void basicImage::setImage(const std::vector<cgui::string>& image)

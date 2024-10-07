@@ -1,7 +1,7 @@
 #include"cgui.h"
-using namespace std;
+#include <iostream>
 
-static void addNewLinesTo(vector<vector<string>>& target, int n) {
+static void addNewLinesTo(std::vector<std::vector<cgui::string>>& target, int n) {
     if (n > target.size()) {
         for (int i = 0; i < n - target.size(); ++i) {
             target.emplace_back();
@@ -9,9 +9,9 @@ static void addNewLinesTo(vector<vector<string>>& target, int n) {
     }
 }
 
-string page::toString()
+std::string page::toString()
 {
-    vector<vector<string>> lines;
+    std::vector<std::vector<cgui::string>> lines;
     for (auto& c : components) {
         int row = getAboveComponentHeight(c.first);
         // 如果上方无组件，且不是这行的第一个组件，则与左边组件对齐
@@ -25,7 +25,7 @@ string page::toString()
         addNewLinesTo(lines, row + 1);
         for (int l = 0; l < c.second->getHeight(); ++l) {
             addNewLinesTo(lines, row + l + 1);
-            string str = c.second->getData()[l];
+            cgui::string str = c.second->getData()[l];
             int h = getLeftComponentHeight(c.first);
             if (h != 0 && h < c.second->getHeight() && l >= h) {
                 str.insert(0, getAllLeftComponentWidth(c.first, l), ' ');
@@ -34,10 +34,10 @@ string page::toString()
         }
         // 以后加入组件间距
     }
-    string ret = "";
+    std::string ret = "";
     for (auto& line : lines) {
         for (auto& str : line) {
-            ret += str;
+            ret += str.data();
         }
         ret += "\n";
     }
@@ -47,7 +47,7 @@ string page::toString()
 void page::update()
 {
     system("cls");
-    cout << toString();
+    std::cout << toString();
 }
 
 void page::setTo(logicPos pos, std::shared_ptr<component> src)
