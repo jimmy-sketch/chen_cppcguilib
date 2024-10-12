@@ -3,6 +3,7 @@
 #include <string>
 #include <thread>
 #include <iostream>
+#include <fstream>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #define STB_TRUETYPE_IMPLEMENTATION
@@ -51,8 +52,9 @@ static std::vector<cgui::string> bigChar(char c) {
 
 void initFont() {
     FILE* f = nullptr;
-    fopen_s(&f, "simhei.ttf", "rb");
-    fread(ttf_buffer, 1, static_cast<size_t>(1) << 25, f);
+    fopen_s(&f, "asserts/simhei.ttf", "rb");
+    assert(f);
+    fread_s(ttf_buffer, 1 << 25, 1, static_cast<size_t>(1) << 25, f);
     stbtt_InitFont(&font, ttf_buffer, stbtt_GetFontOffsetForIndex(ttf_buffer, 0));
 }
 
@@ -60,7 +62,7 @@ int main() {
     initFont();
     page p(false);
 
-    auto image = std::make_shared<basicImage>(getImageByLines("apple.png"));
+    auto image = std::make_shared<basicImage>(getImageByLines("asserts/textures/apple.png"));
     auto progressBar = std::make_shared<basicProgressBar>(10, 0);
 
     std::vector<cgui::string> multiText = { "Red Red Red","Green Green Green","Blue Blue Blue" };
@@ -74,6 +76,7 @@ int main() {
     p.setTo({ 0, 1 }, std::make_shared<basicText>("Hello World!"));
     p.setTo({ 2, 0 }, progressBar);
     p.setTo({ 2, 1 }, multiLine);
+    p.setTo({ 2, 2 }, image);
     p.update();
 
     while (!progressBar->isDone()) {
@@ -81,7 +84,7 @@ int main() {
         progressBar->updateProgress(progressBar->getProgress() + 10);
         p.update();
     }
-    image->setImage(getImageByLines("diamond_sword.png"));
+    image->setImage(getImageByLines("asserts/textures/diamond_sword.png"));
 
     p.clear();
 

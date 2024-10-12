@@ -18,28 +18,33 @@ static bool operator==(logicPos lhs, logicPos rhs) {
     return (lhs.row == rhs.row) && (lhs.col == rhs.col);
 }
 
-class page
+class page // : public component
 {
 public:
     page(bool enableSelect);
+    int getWeight() const;
+    int getHeight() const;
+    std::vector<cgui::string> getData() const;
 
-    //重要函数：刷新、呈现控件内容
+    // 把page中的内容格式化为字符串
     std::string toString();
+    
+    // 打印page
     void update();
 
-    //把某个控件放到...
+    // 把某个控件放到...
     void setTo(logicPos pos, std::shared_ptr<component> src);
 
-    //删除某个控件
+    // 删除某个控件
     void erase(logicPos pos);
 
-    //清空控件
+    // 清空控件
     void clear();
 
-    //启用控件选择
+    // 启用控件选择
     void setEnableSelect(bool v);
 
-    //选择控件
+    // 选择控件
     void select(logicPos pos);
 
 private:
@@ -47,6 +52,7 @@ private:
     std::map<int, int> lineWidthList;
     std::map<int, int> lineHeightList;
 
+    // select要怎么设计比较好？
     logicPos selectedPos = { 0, 0 };
     bool enableSelect;
 };

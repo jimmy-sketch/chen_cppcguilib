@@ -13,6 +13,6 @@ public:
 
 private:
     std::vector<cgui::string> textByLine;
-    size_t calcuateLength() const;
+    int calcuateLength() const;
 };
 

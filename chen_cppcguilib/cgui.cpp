@@ -1,7 +1,7 @@
 #include"cgui.h"
 #include <iostream>
 
-static std::vector<cgui::string> outlineComponent(std::shared_ptr<component> c) {
+static std::vector<cgui::string> addOutline(std::shared_ptr<component> c) {
     std::vector<cgui::string> ret;
     ret.push_back("+" + cgui::string(c->getWidth(), '-') + "+");
     for (auto& line : c->getData()) {
@@ -15,66 +15,67 @@ page::page(bool enableSelect)
     : enableSelect(enableSelect)
 {}
 
-std::string page::toString()
+int page::getWeight() const
 {
-    std::vector<std::vector<cgui::string>> lines;
-
-    if (enableSelect) {
-        lineHeightList[selectedPos.row] = std::max(lineHeightList[selectedPos.row], components[selectedPos]->getHeight() + 2);
-        lineWidthList[selectedPos.col] = std::max(lineWidthList[selectedPos.col], components[selectedPos]->getWidth() + 2);
+    int ret = 0;
+    for (auto&& [_, w] : lineWidthList) {
+        ret += w;
     }
+    return ret;
+}
 
-    for (auto [pos, c] : components) {
-        if (enableSelect && pos == selectedPos) {
-            c = std::make_shared<basicImage>(outlineComponent(c));
-        }
+int page::getHeight() const
+{
+    int ret = 0;
+    for (auto&& [_, h] : lineHeightList) {
+        ret += h;
+    }
+    return ret;
+}
 
+std::vector<cgui::string> page::getData() const
+{
+    std::vector<cgui::string> lines(getHeight() + 1);
+    for (auto&& [pos, c] : components) {
         int height = c->getHeight();
         int width = c->getWidth();
         auto data = c->getData();
 
-        int lineHeight = lineHeightList[pos.row];
-        int lineWidth = lineWidthList[pos.col];
+        int lineHeight = lineHeightList.at(pos.row);
+        int lineWidth = lineWidthList.at(pos.col);
 
         int yOffset = 0;
-        for (int i = pos.row; i > 0; --i) {
-            yOffset += lineHeightList[i-1];
+        for (int i = 0; i < pos.row; ++i) {
+            yOffset += lineHeightList.at(i);
         }
 
-        if (yOffset + lineHeight + 1 > lines.size()) {
-            lines.resize(yOffset + lineHeight + 1);
+        for (int i = 0; i < height; ++i) {
+            lines[yOffset + i] += data[i] + cgui::string(lineWidth - data[i].length(), ' ');
         }
-
-        for (int i = 0; i < lineHeight; ++i) {
-            if (i < height) {
-                data[i] += cgui::string(lineWidth - data[i].length(), ' ');
-                lines[yOffset + i].push_back(data[i]);
-            }
-            else {
-                lines[yOffset + i].push_back(cgui::string(lineWidth, ' '));
-            }
+        for (int i = height; i < lineHeight; ++i) {
+            lines[yOffset + i] += cgui::string(lineWidth, ' ');
         }
     }
+    return lines;
+}
 
+std::string page::toString()
+{
+    std::vector<cgui::string> lines;
     if (enableSelect) {
-        lineHeightList[selectedPos.row] = 0;
-        lineWidthList[selectedPos.col] = 0;
-        for (auto& [p, c] : components) {
-            if (p.col == selectedPos.col) {
-                lineWidthList[selectedPos.col] = std::max(lineWidthList[selectedPos.col], c->getWidth());
-            }
-            if (p.row == selectedPos.row) {
-                lineHeightList[selectedPos.row] = std::max(lineHeightList[selectedPos.row], c->getHeight());
-            }
-        }
+        std::shared_ptr<component> rawSelectedComponent = components[selectedPos];
+        setTo(selectedPos, std::make_shared<basicImage>(addOutline(rawSelectedComponent)));
+        lines = getData();
+        erase(selectedPos);
+        setTo(selectedPos, rawSelectedComponent);
+    }
+    else {
+        lines = getData();
     }
 
     std::string ret = "";
     for (auto& line : lines) {
-        for (auto& str : line) {
-            ret += str.data();
-        }
-        ret += "\n";
+        ret += std::string(line.data()) + "\n";
     }
     return ret;
 }
