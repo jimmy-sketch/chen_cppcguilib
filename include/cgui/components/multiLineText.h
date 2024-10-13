@@ -1,7 +1,7 @@
-#pragma once
+ï»¿#pragma once
 #include "component.h"
 
-//¶àĞĞÎÄ±¾Ïà¹ØÀà
+//å¤šè¡Œæ–‡æœ¬ç›¸å…³ç±»
 class multiLineText : public component
 {
 public:

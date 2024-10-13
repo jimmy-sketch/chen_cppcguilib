@@ -1,6 +1,4 @@
-#include "cgui.h"
-#include <conio.h>
-#include <string>
+#include <cgui/cgui.h>
 #include <thread>
 #include <iostream>
 #include <fstream>
@@ -49,8 +47,8 @@ static std::vector<cgui::string> bigChar(char c) {
     return image;
 }
 
-void initFont() {
-    std::ifstream file("asserts/simhei.ttf", std::ios::binary);
+static void initFont() {
+    std::ifstream file("../../asserts/simhei.ttf", std::ios::binary);
     assert(file);
     file.seekg(0, std::ios::end);
     std::streamsize size = file.tellg();
@@ -64,7 +62,7 @@ int main() {
     initFont();
     page p;
 
-    auto image = std::make_shared<basicImage>(getImageByLines("asserts/textures/apple.png"));
+    auto image = std::make_shared<basicImage>(getImageByLines("../../asserts/textures/apple.png"));
     auto progressBar = std::make_shared<basicProgressBar>(10, 0);
 
     std::vector<cgui::string> multiText = { "Red Red Red","Green Green Green","Blue Blue Blue" };
@@ -73,43 +71,32 @@ int main() {
     multiText[2].insertRGB(0, 0, 0, 255);
     auto multiLine = std::make_shared<multiLineText>(multiText);
 
-    p.setTo({ 0, 0 }, image);
-    p.setTo({ 1, 0 }, std::make_shared<basicText>("\033[38;2;255;0;0mRed Text\033[0m"));
-    p.setTo({ 0, 1 }, std::make_shared<basicText>("Hello World!"));
-    p.setTo({ 2, 0 }, progressBar);
-    p.setTo({ 2, 1 }, multiLine);
-    p.setTo({ 2, 2 }, image);
-    p.update();
+    auto space = std::make_shared<basicText>("   ");
 
+    auto title = std::make_shared<sameLine>();
+    title->setTo(0, image);
+    title->setTo(1, space);
+    title->setTo(2, std::make_shared<basicImage>(bigChar('C')));
+    title->setTo(3, space);
+    title->setTo(4, std::make_shared<basicImage>(bigChar('G')));
+    title->setTo(5, space);
+    title->setTo(6, std::make_shared<basicImage>(bigChar('U')));
+    title->setTo(7, space);
+    title->setTo(8, std::make_shared<basicImage>(bigChar('I')));
+    title->setTo(9, space);
+    title->setTo(10, image);
+
+    auto line1 = std::make_shared<sameLine>();
+    line1->setTo(0, multiLine);
+    line1->setTo(1, progressBar);
+
+    p.setTo({ 0, 0 }, title);
+    p.setTo({ 1, 0 }, line1);
+    p.update();
     while (!progressBar->isDone()) {
         std::this_thread::sleep_for(500ms);
         progressBar->updateProgress(progressBar->getProgress() + 10);
         p.update();
     }
-    image->setImage(getImageByLines("asserts/textures/diamond_sword.png"));
-
-    p.clear();
-
-    auto space = std::make_shared<basicText>("   ");
-
-    p.setTo({ 0, 0 }, image);
-    p.setTo({ 0, 1 }, space);
-    p.setTo({ 0, 2 }, std::make_shared<basicImage>(bigChar('C')));
-    p.setTo({ 0, 3 }, space);
-    p.setTo({ 0, 4 }, std::make_shared<basicImage>(bigChar('G')));
-    p.setTo({ 0, 5 }, space);
-    p.setTo({ 0, 6 }, std::make_shared<basicImage>(bigChar('U')));
-    p.setTo({ 0, 7 }, space);
-    p.setTo({ 0, 8 }, std::make_shared<basicImage>(bigChar('I')));
-    p.setTo({ 0, 9 }, space);
-    p.setTo({ 0, 10 }, image);
-    p.update();
-
-    page p1;
-    p1.setTo({ 0, 0 }, std::make_shared<basicText>("\x1b[38;2;255;0;0mOption1\033[0m"));
-    p1.setTo({ 0, 1 }, std::make_shared<basicText>("\x1b[38;2;0;255;0mOption2\033[0m"));
-    p1.setTo({ 0, 2 }, std::make_shared<basicText>("\x1b[38;2;255;0;255mOption3\033[0m"));
-    p1.setTo({ 0, 3 }, std::make_shared<basicText>("\x1b[38;2;0;255;0mOption4\033[0m"));
-    p1.setTo({ 0, 4 }, std::make_shared<basicText>("\x1b[38;2;255;0;0mOption5\033[0m"));
     return 0;
 }

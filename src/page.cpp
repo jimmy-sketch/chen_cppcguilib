@@ -1,4 +1,4 @@
-#include"cgui.h"
+#include <cgui/page.h>
 #include <iostream>
 
 static std::vector<cgui::string> addOutline(std::shared_ptr<component> c) {
@@ -14,8 +14,8 @@ static std::vector<cgui::string> addOutline(std::shared_ptr<component> c) {
 size_t page::getWeight() const
 {
     size_t ret = 0;
-    for (auto&& [_, w] : lineWidthList) {
-        ret += w;
+    for (auto&& [_, c] : components) {
+        ret += c->getWidth();
     }
     return ret;
 }
@@ -23,8 +23,8 @@ size_t page::getWeight() const
 size_t page::getHeight() const
 {
     size_t ret = 0;
-    for (auto&& [_, h] : lineHeightList) {
-        ret += h;
+    for (auto&& [_, c] : components) {
+        ret += c->getHeight();
     }
     return ret;
 }
@@ -32,6 +32,12 @@ size_t page::getHeight() const
 std::vector<cgui::string> page::getData() const
 {
     std::vector<cgui::string> lines(getHeight() + 1);
+    std::map<int, size_t> lineWidthList;
+    std::map<int, size_t> lineHeightList;
+    for (auto& [p, c] : components) {
+        lineWidthList[p.col] = std::max(lineWidthList[p.col], c->getWidth());
+        lineHeightList[p.row] = std::max(lineHeightList[p.row], c->getHeight());
+    }
     for (auto&& [pos, c] : components) {
         size_t height = c->getHeight();
         size_t width = c->getWidth();
@@ -42,7 +48,9 @@ std::vector<cgui::string> page::getData() const
 
         size_t yOffset = 0;
         for (int i = 0; i < pos.row; ++i) {
-            yOffset += lineHeightList.at(i);
+            if (lineHeightList.find(i) != lineHeightList.end()) {
+                yOffset += lineHeightList.at(i);
+            }
         }
 
         for (size_t i = 0; i < height; ++i) {
@@ -73,28 +81,14 @@ void page::update()
 void page::setTo(logicPos pos, std::shared_ptr<component> src)
 {
     components[pos] = src;
-    lineWidthList[pos.col] = std::max(lineWidthList[pos.col], src->getWidth());
-    lineHeightList[pos.row] = std::max(lineHeightList[pos.row], src->getHeight());
 }
 
 void page::erase(logicPos pos)
 {
     components.erase(pos);
-    lineWidthList[pos.col] = 0;
-    lineHeightList[pos.row] = 0;
-    for (auto& [p, c] : components) {
-        if (p.col == pos.col) {
-            lineWidthList[pos.col] = std::max(lineWidthList[pos.col], c->getWidth());
-        }
-        if (p.row == pos.row) {
-            lineHeightList[pos.row] = std::max(lineHeightList[pos.row], c->getHeight());
-        }
-    }
 }
 
 void page::clear()
 {
     components.clear();
-    lineHeightList.clear();
-    lineWidthList.clear();
 }

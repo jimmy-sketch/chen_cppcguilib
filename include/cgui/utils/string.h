@@ -3,30 +3,30 @@
 
 namespace cgui {
 
-// std::stringÔì³ÉµÄbugÌ«¶àÁË£¬ÎªÁË±ãÓÚÊ¹ÓÃÖ»ºÃÔÙ·â×°Ò»²ã
-// Õâ¸östringÊÇÎªÁË¿ØÖÆÌ¨uiËù×¨ÃÅÉè¼ÆµÄ
+// std::stringé€ æˆçš„bugå¤ªå¤šäº†ï¼Œä¸ºäº†ä¾¿äºä½¿ç”¨åªå¥½å†å°è£…ä¸€å±‚
+// è¿™ä¸ªstringæ˜¯ä¸ºäº†æ§åˆ¶å°uiæ‰€ä¸“é—¨è®¾è®¡çš„
 // 
-// ¹¦ÄÜÈçÏÂ£º
+// åŠŸèƒ½å¦‚ä¸‹ï¼š
 // 
-// length()·µ»Ø¿É¼û×Ö·ûÊıÁ¿
-// size()·µ»ØÈ«²¿×Ö·ûÊıÁ¿
+// length()è¿”å›å¯è§å­—ç¬¦æ•°é‡
+// size()è¿”å›å…¨éƒ¨å­—ç¬¦æ•°é‡
 // 
-// ½â¾öUnicode×Ö·ûÕ¼ÓÃ³¤¶ÈºÍÏÔÊ¾³¤¶È²»Ò»ÖÂÎÊÌâ
+// è§£å†³Unicodeå­—ç¬¦å ç”¨é•¿åº¦å’Œæ˜¾ç¤ºé•¿åº¦ä¸ä¸€è‡´é—®é¢˜
 // 
-// ¿ÉÖ±½Ó²åÈërgb£¬»á×Ô¶¯×ª³ÉasciiĞòÁĞ
-// Ä©Î²»á×Ô¶¯»Ö¸´Ä¬ÈÏÑÕÉ«
+// å¯ç›´æ¥æ’å…¥rgbï¼Œä¼šè‡ªåŠ¨è½¬æˆasciiåºåˆ—
+// æœ«å°¾ä¼šè‡ªåŠ¨æ¢å¤é»˜è®¤é¢œè‰²
 // 
-// ²»»á°üº¬»»ĞĞ·û£¬\n»á±ä³É¿Õ¸ñ
+// ä¸ä¼šåŒ…å«æ¢è¡Œç¬¦ï¼Œ\nä¼šå˜æˆç©ºæ ¼
 // 
 class string {
 public:
     string();
     string(const char* in);
     string(std::string_view in);
-    string(int count, char c);
+    string(size_t count, char c);
 
     size_t size() const;
-    int length() const;
+    size_t length() const;
     
     void insert(int pos, const string& other);
     void insert(int pos, int count, char c);
@@ -49,10 +49,10 @@ public:
 
 private:
     std::string str;
-    int visibleLength = 0;
-    int colorCount = 0; // ÓÃÓÚÑÕÉ«µÄascii×ªÒå×Ö·ûÊıÁ¿
+    size_t visibleLength = 0;
+    int colorCount = 0; // ç”¨äºé¢œè‰²çš„asciiè½¬ä¹‰å­—ç¬¦æ•°é‡
 
-    int pushBackPos() const; // Èç¹ûÓĞÑÕÉ«£¬pos»áÔÚ×îºóÒ»¸ö»Ö¸´Ä¬ÈÏÑÕÉ«Ö®Ç°
+    size_t pushBackPos() const; // å¦‚æœæœ‰é¢œè‰²ï¼Œposä¼šåœ¨æœ€åä¸€ä¸ªæ¢å¤é»˜è®¤é¢œè‰²ä¹‹å‰
     void calculateVisibleLength();
 };
 string operator+(std::string_view lhs, string& rhs);

@@ -1,22 +1,10 @@
 #pragma once
-#include"basicImage.h"
-#include"basicProgressBar.h"
-#include"basicText.h"
-#include"multiLineText.h"
+#include "components/component.h"
+#include "logicPos.h"
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
-
-struct logicPos {
-    int row, col;
-};
-static bool operator<(logicPos lhs, logicPos rhs) {
-    return (lhs.row < rhs.row) || (lhs.row == rhs.row && lhs.col < rhs.col);
-}
-static bool operator==(logicPos lhs, logicPos rhs) {
-    return (lhs.row == rhs.row) && (lhs.col == rhs.col);
-}
 
 class page // : public component
 {
@@ -27,7 +15,7 @@ public:
 
     // 把page中的内容格式化为字符串
     std::string toString();
-    
+
     // 打印page
     void update();
 
@@ -42,6 +30,4 @@ public:
 
 private:
     std::map<logicPos, std::shared_ptr<component>> components;
-    std::map<int, size_t> lineWidthList;
-    std::map<int, size_t> lineHeightList;
 };
