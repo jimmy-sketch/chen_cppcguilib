@@ -8,12 +8,12 @@ basicImage::basicImage(const std::vector<cgui::string>& image)
 	calculateWidth();
 }
 
-int basicImage::getWidth() const
+size_t basicImage::getWidth() const
 {
 	return width;
 }
 
-int basicImage::getHeight() const
+size_t basicImage::getHeight() const
 {
 	return image.size();
 }

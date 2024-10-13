@@ -12,4 +12,21 @@
 欢迎PR、star、发起issue!
 
 ## API 介绍
-介绍什么介绍，源码里面有，注释详细！自己看！
+````mermaid 
+graph LR
+    subgraph utils
+        string
+    end
+    utils --> components
+
+    subgraph components
+        direction LR
+        component --> basicImage
+        component --> basicProgressBar
+        component --> basicText
+        component --> multiLineText
+    end
+
+    components --> page
+    logicPos --> page
+````

@@ -23,10 +23,10 @@ public:
     string();
     string(const char* in);
     string(std::string_view in);
-    string(int count, char c);
+    string(size_t count, char c);
 
     size_t size() const;
-    int length() const;
+    size_t length() const;
     
     void insert(int pos, const string& other);
     void insert(int pos, int count, char c);
@@ -49,10 +49,10 @@ public:
 
 private:
     std::string str;
-    int visibleLength = 0;
+    size_t visibleLength = 0;
     int colorCount = 0; // 用于颜色的ascii转义字符数量
 
-    int pushBackPos() const; // 如果有颜色，pos会在最后一个恢复默认颜色之前
+    size_t pushBackPos() const; // 如果有颜色，pos会在最后一个恢复默认颜色之前
     void calculateVisibleLength();
 };
 string operator+(std::string_view lhs, string& rhs);

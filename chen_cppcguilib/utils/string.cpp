@@ -8,10 +8,10 @@ static const std::string defaultColor = "\033[0m";
 string::string() {}
 string::string(const char* in) : str(in) { calculateVisibleLength(); }
 string::string(std::string_view in) : str(in) { calculateVisibleLength(); }
-string::string(int count, char c) : str(count, c) { calculateVisibleLength(); }
+string::string(size_t count, char c) : str(count, c) { calculateVisibleLength(); }
 
 size_t string::size() const { return str.size(); }
-int string::length() const { return visibleLength; }
+size_t string::length() const { return visibleLength; }
 
 void string::insert(int pos, const string& other) {
     str.insert(pos, other.str);
@@ -89,7 +89,7 @@ const char* cgui::string::data() const
     return str.data();
 }
 
-int cgui::string::pushBackPos() const
+size_t cgui::string::pushBackPos() const
 {
     if (colorCount == 0) {
         return str.end() - str.begin();
