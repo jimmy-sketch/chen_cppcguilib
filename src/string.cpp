@@ -101,14 +101,14 @@ size_t cgui::string::pushBackPos() const
 
 void string::calculateVisibleLength() {
     visibleLength = 0;
-    // 不能有换行符
+    // 涓嶈兘鏈夋崲琛岀
     for (auto& c : str) {
         if (c == '\n') { c = ' '; }
     }
-    // 移除ANSI转义序列
+    // 绉婚櫎ANSI杞箟搴忓垪
     std::regex ansiEscape(R"(\x1B\[[0-9;]*[A-Za-z])");
     std::string cleanLine = std::regex_replace(str, ansiEscape, "");
-    // 处理unicode字符
+    // 澶勭悊unicode瀛楃
     // todo
     visibleLength = cleanLine.size();
 }

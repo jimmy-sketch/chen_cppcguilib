@@ -13,19 +13,19 @@ public:
     size_t getHeight() const;
     std::vector<cgui::string> getData() const;
 
-    // °ÑpageÖĞµÄÄÚÈİ¸ñÊ½»¯Îª×Ö·û´®
+    // æŠŠpageä¸­çš„å†…å®¹æ ¼å¼åŒ–ä¸ºå­—ç¬¦ä¸²
     std::string toString();
 
-    // ´òÓ¡page
+    // æ‰“å°page
     void update();
 
-    // °ÑÄ³¸ö¿Ø¼ş·Åµ½...
+    // æŠŠæŸä¸ªæ§ä»¶æ”¾åˆ°...
     void setTo(logicPos pos, std::shared_ptr<component> src);
 
-    // É¾³ıÄ³¸ö¿Ø¼ş
+    // åˆ é™¤æŸä¸ªæ§ä»¶
     void erase(logicPos pos);
 
-    // Çå¿Õ¿Ø¼ş
+    // æ¸…ç©ºæ§ä»¶
     void clear();
 
 private:

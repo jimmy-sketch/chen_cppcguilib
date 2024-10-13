@@ -3,20 +3,20 @@
 
 namespace cgui {
 
-// std::string��ɵ�bug̫���ˣ�Ϊ�˱���ʹ��ֻ���ٷ�װһ��
-// ���string��Ϊ�˿���̨ui��ר����Ƶ�
+// std::string造成的bug太多了，为了便于使用只好再封装一层
+// 这个string是为了控制台ui所专门设计的
 // 
-// �������£�
+// 功能如下：
 // 
-// length()���ؿɼ��ַ�����
-// size()����ȫ���ַ�����
+// length()返回可见字符数量
+// size()返回全部字符数量
 // 
-// ���Unicode�ַ�ռ�ó��Ⱥ���ʾ���Ȳ�һ������
+// 解决Unicode字符占用长度和显示长度不一致问题
 // 
-// ��ֱ�Ӳ���rgb�����Զ�ת��ascii����
-// ĩβ���Զ��ָ�Ĭ����ɫ
+// 可直接插入rgb，会自动转成ascii序列
+// 末尾会自动恢复默认颜色
 // 
-// ����������з���\n���ɿո�
+// 不会包含换行符，\n会变成空格
 // 
 class string {
 public:
@@ -50,9 +50,9 @@ public:
 private:
     std::string str;
     size_t visibleLength = 0;
-    int colorCount = 0; // ������ɫ��asciiת���ַ�����
+    int colorCount = 0; // 用于颜色的ascii转义字符数量
 
-    size_t pushBackPos() const; // �������ɫ��pos�������һ���ָ�Ĭ����ɫ֮ǰ
+    size_t pushBackPos() const; // 如果有颜色，pos会在最后一个恢复默认颜色之前
     void calculateVisibleLength();
 };
 string operator+(std::string_view lhs, string& rhs);

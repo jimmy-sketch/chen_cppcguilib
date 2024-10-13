@@ -4,7 +4,7 @@
 #include "../utils/string.h"
 
 /*
-* 所有组件的基类
+* 鎵�鏈夌粍浠剁殑鍩虹被
 * 
 */
 
