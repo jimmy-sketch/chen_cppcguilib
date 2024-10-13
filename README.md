@@ -6,7 +6,9 @@
 - [x] 进度条的显示，更新
 - [X] 对于一些排版功能的支持
 - [X] 彩色字体支持
-- [ ] 多行文本
+- [X] 多行文本
+- [ ] 进度条自由样式切换
+- [ ] 分割线……
 
 这当前是一个WIP的项目，请不要随意clone,如要移植, 请使用releases里面公布的代码进行编译, 谢谢！
 欢迎PR、star、发起issue!
@@ -32,9 +34,10 @@ graph LR
         component --> basicProgressBar
         component --> basicText
         component --> multiLineText
-        component --> sameLine
+        component --> singleLine
     end
 
     components --> page
     logicPos --> page
 ````
+更详细的介绍可以去看一看`sandbox/demo.cpp`，里面对于每种功能几乎都有测试，风格应该也还算简单易懂
