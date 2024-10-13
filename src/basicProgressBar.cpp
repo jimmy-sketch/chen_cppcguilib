@@ -27,7 +27,8 @@ std::vector<cgui::string> basicProgressBar::getData() const
 {
 	std::string ret = "";
 	int fillCount = (int)((double)progress * (double)(length - 2) / 100.0);
-	ret += std::to_string(this->progress) + "%";
+	if (this->showProgress)
+		ret += std::to_string(this->progress) + "%";
 	ret += beginChar;
 	for (int i = 0; i < length - 2; ++i) {
 		if (i < fillCount) {
@@ -57,4 +58,14 @@ int basicProgressBar::getProgress() const
 bool basicProgressBar::isDone() const
 {
 	return progress >= 100;
+}
+
+void basicProgressBar::switchBarStyle(progressStyle x)
+{
+	this->beginChar = x.beginChar;
+	this->endChar = x.endChar;
+	this->fillChar = x.fillChar;
+	this->gapChar = x.gapChar;
+	this->seqChar = x.seqChar;
+	this->showProgress = x.showProgress;
 }
