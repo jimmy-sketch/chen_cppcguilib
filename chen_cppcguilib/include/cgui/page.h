@@ -1,22 +1,10 @@
 #pragma once
-#include"basicImage.h"
-#include"basicProgressBar.h"
-#include"basicText.h"
-#include"multiLineText.h"
+#include "components/component.h"
+#include "logicPos.h"
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
-
-struct logicPos {
-    int row, col;
-};
-static bool operator<(logicPos lhs, logicPos rhs) {
-    return (lhs.row < rhs.row) || (lhs.row == rhs.row && lhs.col < rhs.col);
-}
-static bool operator==(logicPos lhs, logicPos rhs) {
-    return (lhs.row == rhs.row) && (lhs.col == rhs.col);
-}
 
 class page // : public component
 {
@@ -25,19 +13,19 @@ public:
     size_t getHeight() const;
     std::vector<cgui::string> getData() const;
 
-    // æŠŠpageä¸­çš„å†…å®¹æ ¼å¼åŒ–ä¸ºå­—ç¬¦ä¸²
+    // °ÑpageÖĞµÄÄÚÈİ¸ñÊ½»¯Îª×Ö·û´®
     std::string toString();
-    
-    // æ‰“å°page
+
+    // ´òÓ¡page
     void update();
 
-    // æŠŠæŸä¸ªæ§ä»¶æ”¾åˆ°...
+    // °ÑÄ³¸ö¿Ø¼ş·Åµ½...
     void setTo(logicPos pos, std::shared_ptr<component> src);
 
-    // åˆ é™¤æŸä¸ªæ§ä»¶
+    // É¾³ıÄ³¸ö¿Ø¼ş
     void erase(logicPos pos);
 
-    // æ¸…ç©ºæ§ä»¶
+    // Çå¿Õ¿Ø¼ş
     void clear();
 
 private:

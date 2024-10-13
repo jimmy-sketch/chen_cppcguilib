@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "utils/string.h"
+#include "../utils/string.h"
 
 /*
 * 所有组件的基类

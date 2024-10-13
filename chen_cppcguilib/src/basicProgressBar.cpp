@@ -1,4 +1,4 @@
-#include "basicProgressBar.h"
+#include <cgui/components/basicProgressBar.h>
 #include <cassert>
 
 basicProgressBar::basicProgressBar(int _length, int _style)

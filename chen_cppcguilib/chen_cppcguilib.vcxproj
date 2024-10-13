@@ -70,6 +70,12 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(ProjectDir)include\;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(ProjectDir)include\;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -133,21 +139,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="basicImage.h" />
-    <ClInclude Include="basicProgressBar.h" />
-    <ClInclude Include="basicText.h" />
-    <ClInclude Include="cgui.h" />
-    <ClInclude Include="component.h" />
-    <ClInclude Include="multiLineText.h" />
-    <ClInclude Include="utils\string.h" />
+    <ClInclude Include="include\cgui\cgui.h" />
+    <ClInclude Include="include\cgui\components\basicImage.h" />
+    <ClInclude Include="include\cgui\components\basicProgressBar.h" />
+    <ClInclude Include="include\cgui\components\basicText.h" />
+    <ClInclude Include="include\cgui\components\component.h" />
+    <ClInclude Include="include\cgui\components\multiLineText.h" />
+    <ClInclude Include="include\cgui\logicPos.h" />
+    <ClInclude Include="include\cgui\page.h" />
+    <ClInclude Include="include\cgui\utils\string.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="basicImage.cpp" />
-    <ClCompile Include="basicProgressBar.cpp" />
-    <ClCompile Include="basicText.cpp" />
-    <ClCompile Include="cgui.cpp" />
-    <ClCompile Include="multiLineText.cpp" />
-    <ClCompile Include="utils\string.cpp" />
+    <ClCompile Include="src\page.cpp" />
+    <ClCompile Include="src\basicImage.cpp" />
+    <ClCompile Include="src\basicProgressBar.cpp" />
+    <ClCompile Include="src\basicText.cpp" />
+    <ClCompile Include="src\multiLineText.cpp" />
+    <ClCompile Include="src\string.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

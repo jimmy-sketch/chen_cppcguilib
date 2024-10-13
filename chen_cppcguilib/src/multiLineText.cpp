@@ -1,4 +1,4 @@
-#include "multiLineText.h"
+#include <cgui/components/multiLineText.h>
 
 multiLineText::multiLineText(std::vector<cgui::string> textByLine)
 {

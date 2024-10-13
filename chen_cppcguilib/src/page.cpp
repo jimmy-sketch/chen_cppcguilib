@@ -1,4 +1,4 @@
-#include"cgui.h"
+#include <cgui/page.h>
 #include <iostream>
 
 static std::vector<cgui::string> addOutline(std::shared_ptr<component> c) {
@@ -42,7 +42,9 @@ std::vector<cgui::string> page::getData() const
 
         size_t yOffset = 0;
         for (int i = 0; i < pos.row; ++i) {
-            yOffset += lineHeightList.at(i);
+            if (lineHeightList.find(i) != lineHeightList.end()) {
+                yOffset += lineHeightList.at(i);
+            }
         }
 
         for (size_t i = 0; i < height; ++i) {

@@ -1,4 +1,4 @@
-#include "cgui.h"
+#include <cgui/cgui.h>
 #include <conio.h>
 #include <string>
 #include <thread>
@@ -73,43 +73,28 @@ int main() {
     multiText[2].insertRGB(0, 0, 0, 255);
     auto multiLine = std::make_shared<multiLineText>(multiText);
 
-    p.setTo({ 0, 0 }, image);
-    p.setTo({ 1, 0 }, std::make_shared<basicText>("\033[38;2;255;0;0mRed Text\033[0m"));
-    p.setTo({ 0, 1 }, std::make_shared<basicText>("Hello World!"));
-    p.setTo({ 2, 0 }, progressBar);
-    p.setTo({ 2, 1 }, multiLine);
-    p.setTo({ 2, 2 }, image);
-    p.update();
+    auto space = std::make_shared<basicText>("   ");
 
+    p.setTo({ 0, 0 }, image);
+    p.setTo({ 0, 1 }, multiLine);
+    p.setTo({ 2, 0 }, progressBar);
+    p.setTo({ 3, 0 }, image);
+    p.setTo({ 3, 1 }, space);
+    p.setTo({ 3, 2 }, std::make_shared<basicImage>(bigChar('C')));
+    p.setTo({ 3, 3 }, space);
+    p.setTo({ 3, 4 }, std::make_shared<basicImage>(bigChar('G')));
+    p.setTo({ 3, 5 }, space);
+    p.setTo({ 3, 6 }, std::make_shared<basicImage>(bigChar('U')));
+    p.setTo({ 3, 7 }, space);
+    p.setTo({ 3, 8 }, std::make_shared<basicImage>(bigChar('I')));
+    p.setTo({ 3, 9 }, space);
+    p.setTo({ 3, 10 }, image);
+
+    p.update();
     while (!progressBar->isDone()) {
         std::this_thread::sleep_for(500ms);
         progressBar->updateProgress(progressBar->getProgress() + 10);
         p.update();
     }
-    image->setImage(getImageByLines("asserts/textures/diamond_sword.png"));
-
-    p.clear();
-
-    auto space = std::make_shared<basicText>("   ");
-
-    p.setTo({ 0, 0 }, image);
-    p.setTo({ 0, 1 }, space);
-    p.setTo({ 0, 2 }, std::make_shared<basicImage>(bigChar('C')));
-    p.setTo({ 0, 3 }, space);
-    p.setTo({ 0, 4 }, std::make_shared<basicImage>(bigChar('G')));
-    p.setTo({ 0, 5 }, space);
-    p.setTo({ 0, 6 }, std::make_shared<basicImage>(bigChar('U')));
-    p.setTo({ 0, 7 }, space);
-    p.setTo({ 0, 8 }, std::make_shared<basicImage>(bigChar('I')));
-    p.setTo({ 0, 9 }, space);
-    p.setTo({ 0, 10 }, image);
-    p.update();
-
-    page p1;
-    p1.setTo({ 0, 0 }, std::make_shared<basicText>("\x1b[38;2;255;0;0mOption1\033[0m"));
-    p1.setTo({ 0, 1 }, std::make_shared<basicText>("\x1b[38;2;0;255;0mOption2\033[0m"));
-    p1.setTo({ 0, 2 }, std::make_shared<basicText>("\x1b[38;2;255;0;255mOption3\033[0m"));
-    p1.setTo({ 0, 3 }, std::make_shared<basicText>("\x1b[38;2;0;255;0mOption4\033[0m"));
-    p1.setTo({ 0, 4 }, std::make_shared<basicText>("\x1b[38;2;255;0;0mOption5\033[0m"));
     return 0;
 }

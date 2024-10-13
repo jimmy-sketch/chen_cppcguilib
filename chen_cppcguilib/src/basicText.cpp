@@ -1,5 +1,4 @@
-#include"basicText.h"
-#include <regex>
+#include <cgui/components/basicText.h>
 using namespace std;
 
 basicText::basicText(std::string_view str)

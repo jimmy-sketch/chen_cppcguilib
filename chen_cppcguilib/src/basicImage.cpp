@@ -1,5 +1,5 @@
-#include "basicImage.h"
-#include<vector>
+#include <cgui/components/basicImage.h>
+#include <vector>
 #include <regex>
 
 basicImage::basicImage(const std::vector<cgui::string>& image)

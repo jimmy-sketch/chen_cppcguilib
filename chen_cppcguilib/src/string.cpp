@@ -1,4 +1,4 @@
-#include "string.h"
+#include <cgui/utils/string.h>
 #include <regex>
 
 using namespace cgui;

@@ -15,45 +15,51 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="basicText.h">
+    <ClInclude Include="include\cgui\cgui.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="basicImage.h">
+    <ClInclude Include="include\cgui\utils\string.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="basicProgressBar.h">
+    <ClInclude Include="include\cgui\components\basicImage.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="component.h">
+    <ClInclude Include="include\cgui\components\basicProgressBar.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="cgui.h">
+    <ClInclude Include="include\cgui\components\basicText.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="multiLineText.h">
+    <ClInclude Include="include\cgui\components\component.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="utils\string.h">
+    <ClInclude Include="include\cgui\components\multiLineText.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cgui\page.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cgui\logicPos.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="basicText.cpp">
+    <ClCompile Include="src\page.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="basicImage.cpp">
+    <ClCompile Include="src\string.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="basicProgressBar.cpp">
+    <ClCompile Include="src\basicImage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="cgui.cpp">
+    <ClCompile Include="src\basicProgressBar.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="multiLineText.cpp">
+    <ClCompile Include="src\basicText.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="utils\string.cpp">
+    <ClCompile Include="src\multiLineText.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
