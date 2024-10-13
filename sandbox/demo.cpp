@@ -1,6 +1,4 @@
 #include <cgui/cgui.h>
-#include <conio.h>
-#include <string>
 #include <thread>
 #include <iostream>
 #include <fstream>
