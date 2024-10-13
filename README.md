@@ -11,6 +11,13 @@
 这当前是一个WIP的项目，请不要随意clone,如要移植, 请使用releases里面公布的代码进行编译, 谢谢！
 欢迎PR、star、发起issue!
 
+## 编译方式
+本项目使用cmake管理
+需要使用的命令：
+```
+cmake -B build
+```
+
 ## API 介绍
 ````mermaid 
 graph LR
@@ -25,6 +32,7 @@ graph LR
         component --> basicProgressBar
         component --> basicText
         component --> multiLineText
+        component --> sameLine
     end
 
     components --> page
