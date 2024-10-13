@@ -1,5 +1,4 @@
 #include <cgui.h>
-#include <conio.h>
 #include <string>
 #include <thread>
 #include <iostream>
@@ -10,6 +9,20 @@
 #include "stb_truetype.h"
 
 using namespace std::literals;
+
+#include <termios.h>
+#include <unistd.h>
+int _getch() {
+    struct termios oldt, newt;
+    int ch;
+    tcgetattr(STDIN_FILENO, &oldt);
+    newt = oldt;
+    newt.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+    ch = getchar();
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+    return ch;
+}
 
 static std::vector<cgui::string> getImageByLines(std::string_view imageFile) {
     std::vector<cgui::string> lines;
@@ -119,7 +132,7 @@ int main() {
         std::cout << p.toString();
         std::cout << std::endl << std::endl << std::endl;
         std::cout << p1.toString();
-    
+
         char c = _getch();
         if (c == 75) {
             i -= 1;
