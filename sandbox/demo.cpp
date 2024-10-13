@@ -49,7 +49,7 @@ static std::vector<cgui::string> bigChar(char c) {
     return image;
 }
 
-void initFont() {
+static void initFont() {
     std::ifstream file("asserts/simhei.ttf", std::ios::binary);
     assert(file);
     file.seekg(0, std::ios::end);
@@ -75,21 +75,25 @@ int main() {
 
     auto space = std::make_shared<basicText>("   ");
 
-    p.setTo({ 0, 0 }, image);
-    p.setTo({ 0, 1 }, multiLine);
-    p.setTo({ 2, 0 }, progressBar);
-    p.setTo({ 3, 0 }, image);
-    p.setTo({ 3, 1 }, space);
-    p.setTo({ 3, 2 }, std::make_shared<basicImage>(bigChar('C')));
-    p.setTo({ 3, 3 }, space);
-    p.setTo({ 3, 4 }, std::make_shared<basicImage>(bigChar('G')));
-    p.setTo({ 3, 5 }, space);
-    p.setTo({ 3, 6 }, std::make_shared<basicImage>(bigChar('U')));
-    p.setTo({ 3, 7 }, space);
-    p.setTo({ 3, 8 }, std::make_shared<basicImage>(bigChar('I')));
-    p.setTo({ 3, 9 }, space);
-    p.setTo({ 3, 10 }, image);
+    auto title = std::make_shared<sameLine>();
+    title->setTo(0, image);
+    title->setTo(1, space);
+    title->setTo(2, std::make_shared<basicImage>(bigChar('C')));
+    title->setTo(3, space);
+    title->setTo(4, std::make_shared<basicImage>(bigChar('G')));
+    title->setTo(5, space);
+    title->setTo(6, std::make_shared<basicImage>(bigChar('U')));
+    title->setTo(7, space);
+    title->setTo(8, std::make_shared<basicImage>(bigChar('I')));
+    title->setTo(9, space);
+    title->setTo(10, image);
 
+    auto line1 = std::make_shared<sameLine>();
+    line1->setTo(0, multiLine);
+    line1->setTo(1, progressBar);
+
+    p.setTo({ 0, 0 }, title);
+    p.setTo({ 1, 0 }, line1);
     p.update();
     while (!progressBar->isDone()) {
         std::this_thread::sleep_for(500ms);

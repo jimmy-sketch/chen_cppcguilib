@@ -30,6 +30,4 @@ public:
 
 private:
     std::map<logicPos, std::shared_ptr<component>> components;
-    std::map<int, size_t> lineWidthList;
-    std::map<int, size_t> lineHeightList;
 };

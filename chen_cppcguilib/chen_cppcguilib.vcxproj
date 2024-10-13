@@ -145,11 +145,13 @@
     <ClInclude Include="include\cgui\components\basicText.h" />
     <ClInclude Include="include\cgui\components\component.h" />
     <ClInclude Include="include\cgui\components\multiLineText.h" />
+    <ClInclude Include="include\cgui\components\sameLine.h" />
     <ClInclude Include="include\cgui\logicPos.h" />
     <ClInclude Include="include\cgui\page.h" />
     <ClInclude Include="include\cgui\utils\string.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\sameLine.cpp" />
     <ClCompile Include="src\page.cpp" />
     <ClCompile Include="src\basicImage.cpp" />
     <ClCompile Include="src\basicProgressBar.cpp" />
