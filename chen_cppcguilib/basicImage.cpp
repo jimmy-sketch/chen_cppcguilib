@@ -31,7 +31,7 @@ void basicImage::setImage(const std::vector<cgui::string>& image)
 
 void basicImage::calculateWidth()
 {
-	size_t width = 0;
+	width = 0;
 	for (auto& line : image) {
 		width = std::max(line.length(), width);
 	}
