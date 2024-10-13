@@ -6,12 +6,12 @@ basicText::basicText(std::string_view str)
 	: text(str)
 {}
 
-int basicText::getWidth() const
+size_t basicText::getWidth() const
 {
 	return text.length();
 }
 
-int basicText::getHeight() const
+size_t basicText::getHeight() const
 {
 	return 1;
 }

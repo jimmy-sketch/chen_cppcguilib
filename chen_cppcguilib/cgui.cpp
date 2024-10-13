@@ -11,22 +11,18 @@ static std::vector<cgui::string> addOutline(std::shared_ptr<component> c) {
     return ret;
 }
 
-page::page(bool enableSelect)
-    : enableSelect(enableSelect)
-{}
-
-int page::getWeight() const
+size_t page::getWeight() const
 {
-    int ret = 0;
+    size_t ret = 0;
     for (auto&& [_, w] : lineWidthList) {
         ret += w;
     }
     return ret;
 }
 
-int page::getHeight() const
+size_t page::getHeight() const
 {
-    int ret = 0;
+    size_t ret = 0;
     for (auto&& [_, h] : lineHeightList) {
         ret += h;
     }
@@ -61,20 +57,8 @@ std::vector<cgui::string> page::getData() const
 
 std::string page::toString()
 {
-    std::vector<cgui::string> lines;
-    if (enableSelect) {
-        std::shared_ptr<component> rawSelectedComponent = components[selectedPos];
-        setTo(selectedPos, std::make_shared<basicImage>(addOutline(rawSelectedComponent)));
-        lines = getData();
-        erase(selectedPos);
-        setTo(selectedPos, rawSelectedComponent);
-    }
-    else {
-        lines = getData();
-    }
-
     std::string ret = "";
-    for (auto& line : lines) {
+    for (auto& line : getData()) {
         ret += std::string(line.data()) + "\n";
     }
     return ret;
@@ -113,14 +97,4 @@ void page::clear()
     components.clear();
     lineHeightList.clear();
     lineWidthList.clear();
-}
-
-void page::setEnableSelect(bool v)
-{
-    enableSelect = v;
-}
-
-void page::select(logicPos pos)
-{
-    selectedPos = pos;
 }

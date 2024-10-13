@@ -21,9 +21,8 @@ static bool operator==(logicPos lhs, logicPos rhs) {
 class page // : public component
 {
 public:
-    page(bool enableSelect);
-    int getWeight() const;
-    int getHeight() const;
+    size_t getWeight() const;
+    size_t getHeight() const;
     std::vector<cgui::string> getData() const;
 
     // 把page中的内容格式化为字符串
@@ -41,18 +40,8 @@ public:
     // 清空控件
     void clear();
 
-    // 启用控件选择
-    void setEnableSelect(bool v);
-
-    // 选择控件
-    void select(logicPos pos);
-
 private:
     std::map<logicPos, std::shared_ptr<component>> components;
-    std::map<int, int> lineWidthList;
-    std::map<int, int> lineHeightList;
-
-    // select要怎么设计比较好？
-    logicPos selectedPos = { 0, 0 };
-    bool enableSelect;
+    std::map<int, size_t> lineWidthList;
+    std::map<int, size_t> lineHeightList;
 };

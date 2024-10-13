@@ -5,12 +5,12 @@ multiLineText::multiLineText(std::vector<cgui::string> textByLine)
     this->textByLine = textByLine;
 }
 
-int multiLineText::getWidth() const
+size_t multiLineText::getWidth() const
 {
     return calcuateLength();
 }
 
-int multiLineText::getHeight() const
+size_t multiLineText::getHeight() const
 {
     return textByLine.size();
 }
@@ -25,9 +25,9 @@ void multiLineText::setMultiText(std::vector<cgui::string> textByLine)
     this->textByLine = textByLine;
 }
 
-int multiLineText::calcuateLength() const
+size_t multiLineText::calcuateLength() const
 {
-    int maxLength = 0;
+    size_t maxLength = 0;
     for (auto& line : textByLine) {
         maxLength = std::max(line.length(), maxLength);
     }

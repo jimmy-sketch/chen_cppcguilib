@@ -11,7 +11,7 @@ string::string(std::string_view in) : str(in) { calculateVisibleLength(); }
 string::string(int count, char c) : str(count, c) { calculateVisibleLength(); }
 
 size_t string::size() const { return str.size(); }
-int string::length() const { return visibleLength; }
+size_t string::length() const { return visibleLength; }
 
 void string::insert(int pos, const string& other) {
     str.insert(pos, other.str);

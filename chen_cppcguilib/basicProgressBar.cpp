@@ -7,7 +7,7 @@ basicProgressBar::basicProgressBar(int _length, int _style)
 	assert(length > 3);
 }
 
-int basicProgressBar::getWidth() const
+size_t basicProgressBar::getWidth() const
 {
 	if (progress < 10)
 		return length + 2;
@@ -17,7 +17,7 @@ int basicProgressBar::getWidth() const
 		return length + 4;
 }
 
-int basicProgressBar::getHeight() const
+size_t basicProgressBar::getHeight() const
 {
 	return 1;
 }

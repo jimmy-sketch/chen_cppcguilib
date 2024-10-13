@@ -1,4 +1,4 @@
-#include <cgui.h>
+#include "cgui.h"
 #include <string>
 #include <thread>
 #include <iostream>
@@ -75,7 +75,7 @@ void initFont() {
 
 int main() {
     initFont();
-    page p(false);
+    page p;
 
     auto image = std::make_shared<basicImage>(getImageByLines("asserts/textures/apple.png"));
     auto progressBar = std::make_shared<basicProgressBar>(10, 0);
@@ -118,30 +118,11 @@ int main() {
     p.setTo({ 0, 10 }, image);
     p.update();
 
-    page p1(true);
+    page p1;
     p1.setTo({ 0, 0 }, std::make_shared<basicText>("\x1b[38;2;255;0;0mOption1\033[0m"));
     p1.setTo({ 0, 1 }, std::make_shared<basicText>("\x1b[38;2;0;255;0mOption2\033[0m"));
     p1.setTo({ 0, 2 }, std::make_shared<basicText>("\x1b[38;2;255;0;255mOption3\033[0m"));
     p1.setTo({ 0, 3 }, std::make_shared<basicText>("\x1b[38;2;0;255;0mOption4\033[0m"));
     p1.setTo({ 0, 4 }, std::make_shared<basicText>("\x1b[38;2;255;0;0mOption5\033[0m"));
-
-    int i = 0;
-    while (true) {
-        p1.select({ 0, i });
-        system("cls");
-        std::cout << p.toString();
-        std::cout << std::endl << std::endl << std::endl;
-        std::cout << p1.toString();
-
-        char c = _getch();
-        if (c == 75) {
-            i -= 1;
-            if (i < 0) { i = 4; }
-        }
-        else if (c == 77) {
-            i += 1;
-            if (i > 4) { i = 0; }
-        }
-    }
     return 0;
 }
