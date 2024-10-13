@@ -33,22 +33,22 @@ std::vector<cgui::string> page::getData() const
 {
     std::vector<cgui::string> lines(getHeight() + 1);
     for (auto&& [pos, c] : components) {
-        int height = c->getHeight();
-        int width = c->getWidth();
+        size_t height = c->getHeight();
+        size_t width = c->getWidth();
         auto data = c->getData();
 
-        int lineHeight = lineHeightList.at(pos.row);
-        int lineWidth = lineWidthList.at(pos.col);
+        size_t lineHeight = lineHeightList.at(pos.row);
+        size_t lineWidth = lineWidthList.at(pos.col);
 
-        int yOffset = 0;
+        size_t yOffset = 0;
         for (int i = 0; i < pos.row; ++i) {
             yOffset += lineHeightList.at(i);
         }
 
-        for (int i = 0; i < height; ++i) {
+        for (size_t i = 0; i < height; ++i) {
             lines[yOffset + i] += data[i] + cgui::string(lineWidth - data[i].length(), ' ');
         }
-        for (int i = height; i < lineHeight; ++i) {
+        for (size_t i = height; i < lineHeight; ++i) {
             lines[yOffset + i] += cgui::string(lineWidth, ' ');
         }
     }

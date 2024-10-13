@@ -15,6 +15,7 @@ size_t basicProgressBar::getWidth() const
 		return length + 3;
 	if (this->isDone())
 		return length + 4;
+	return 0;
 }
 
 size_t basicProgressBar::getHeight() const
