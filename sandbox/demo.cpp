@@ -50,7 +50,7 @@ static std::vector<cgui::string> bigChar(char c) {
 }
 
 static void initFont() {
-    std::ifstream file("asserts/simhei.ttf", std::ios::binary);
+    std::ifstream file("../../asserts/simhei.ttf", std::ios::binary);
     assert(file);
     file.seekg(0, std::ios::end);
     std::streamsize size = file.tellg();
@@ -64,7 +64,7 @@ int main() {
     initFont();
     page p;
 
-    auto image = std::make_shared<basicImage>(getImageByLines("asserts/textures/apple.png"));
+    auto image = std::make_shared<basicImage>(getImageByLines("../../asserts/textures/apple.png"));
     auto progressBar = std::make_shared<basicProgressBar>(10, 0);
 
     std::vector<cgui::string> multiText = { "Red Red Red","Green Green Green","Blue Blue Blue" };
