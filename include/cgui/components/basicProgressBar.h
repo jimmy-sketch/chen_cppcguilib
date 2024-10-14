@@ -1,6 +1,14 @@
 #pragma once
 #include "component.h"
 
+struct progressStyle
+{
+	char beginChar, fillChar, seqChar, gapChar, endChar;
+	bool showProgress = true;
+};
+
+//用于自定义样式
+
 class basicProgressBar : public component
 {
 public:
@@ -9,6 +17,7 @@ public:
 	size_t getHeight() const override;
 	std::vector<cgui::string> getData() const override;
 
+	void switchBarStyle(progressStyle x);
 	void updateProgress(int progress);
 	int getProgress() const;
 	bool isDone() const;
@@ -16,4 +25,5 @@ public:
 private:
 	int length, style, progress;
 	char beginChar = '[', fillChar = '=', seqChar = '>', gapChar = ' ', endChar = ']';
+	bool showProgress = true;
 };
