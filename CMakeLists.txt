@@ -16,6 +16,7 @@ add_library(CGUI
     include/cgui/components/multiLineText.h
     include/cgui/components/tContainer.h
     include/cgui/components/vContainer.h
+    include/cgui/utils/config.h
     include/cgui/utils/pos.h
     include/cgui/utils/string.h
     include/cgui/page.h

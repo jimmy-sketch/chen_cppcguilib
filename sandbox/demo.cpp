@@ -79,10 +79,12 @@ int main() {
     auto progressBar = std::make_shared<basicProgressBar>(10, 0);
     auto progressBar1 = std::make_shared<basicProgressBar>(10, 1);
     auto progressBar2 = std::make_shared<basicProgressBar>(10, 2);
+    auto progressBar3 = std::make_shared<basicProgressBar>(10, 2);
     auto progressBars = std::make_shared<vContainer>();
     progressBars->set(0, progressBar);
     progressBars->set(1, progressBar1);
     progressBars->set(2, progressBar2);
+    progressBars->set(3, progressBar3);
 
     std::vector<cgui::string> multiText = { "Red Red Red","Green Green Green","Blue Blue Blue" };
     multiText[0].insertRGB(0, 255, 0, 0);
@@ -103,6 +105,7 @@ int main() {
         progressBar->updateProgress(progressBar->getProgress() + 10);
         progressBar1->updateProgress(progressBar1->getProgress() + 10);
         progressBar2->updateProgress(progressBar2->getProgress() + 10);
+        progressBar3->updateProgress(progressBar3->getProgress() + 10);
         p.update();
     }
     return 0;
