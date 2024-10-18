@@ -1,4 +1,5 @@
 #include <cgui/components/hContainer.h>
+#include <cgui/utils/config.h>
 
 size_t hContainer::getWidth() const
 {
@@ -27,10 +28,10 @@ std::vector<cgui::string> hContainer::getData() const
         auto data = c->getData();
 
         for (size_t i = 0; i < height; ++i) {
-            lines[i] += data[i] + cgui::string(width - data[i].length(), ' ');
+            lines[i] += data[i] + cgui::string(width - data[i].length(), cgui::paddingChar);
         }
         for (size_t i = height; i < getHeight(); ++i) {
-            lines[i] += cgui::string(width, ' ');
+            lines[i] += cgui::string(width, cgui::paddingChar);
         }
     }
     return lines;

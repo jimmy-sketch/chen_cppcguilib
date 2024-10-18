@@ -25,6 +25,7 @@ cmake -B build
 graph LR
     subgraph utils
         direction LR
+        config
         pos
         string
     end

@@ -1,4 +1,5 @@
 #include <cgui/components/vContainer.h>
+#include <cgui/utils/config.h>
 
 size_t vContainer::getWidth() const
 {
@@ -34,7 +35,7 @@ std::vector<cgui::string> vContainer::getData() const
         }
 
         for (size_t i = 0; i < height; ++i) {
-            lines[yOffset + i] += data[i] + cgui::string(getWidth() - data[i].length(), ' ');
+            lines[yOffset + i] += data[i] + cgui::string(getWidth() - data[i].length(), cgui::paddingChar);
         }
     }
     return lines;
