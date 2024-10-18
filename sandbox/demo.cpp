@@ -60,42 +60,49 @@ static void initFont() {
 
 int main() {
     initFont();
-    page p;
 
     auto image = std::make_shared<basicImage>(getImageByLines("../../asserts/textures/apple.png"));
+    auto space = std::make_shared<basicText>("   ");
+    auto title = std::make_shared<hContainer>();
+    title->set(0, image);
+    title->set(1, space);
+    title->set(2, std::make_shared<basicImage>(bigChar('C')));
+    title->set(3, space);
+    title->set(4, std::make_shared<basicImage>(bigChar('G')));
+    title->set(5, space);
+    title->set(6, std::make_shared<basicImage>(bigChar('U')));
+    title->set(7, space);
+    title->set(8, std::make_shared<basicImage>(bigChar('I')));
+    title->set(9, space);
+    title->set(10, image);
+    
     auto progressBar = std::make_shared<basicProgressBar>(10, 0);
+    auto progressBar1 = std::make_shared<basicProgressBar>(10, 1);
+    auto progressBar2 = std::make_shared<basicProgressBar>(10, 2);
+    auto progressBars = std::make_shared<vContainer>();
+    progressBars->set(0, progressBar);
+    progressBars->set(1, progressBar1);
+    progressBars->set(2, progressBar2);
 
     std::vector<cgui::string> multiText = { "Red Red Red","Green Green Green","Blue Blue Blue" };
     multiText[0].insertRGB(0, 255, 0, 0);
     multiText[1].insertRGB(0, 0, 255, 0);
     multiText[2].insertRGB(0, 0, 0, 255);
     auto multiLine = std::make_shared<multiLineText>(multiText);
+    auto line1 = std::make_shared<hContainer>();
+    line1->set(0, multiLine);
+    line1->set(1, std::make_shared<basicText>("progress bars:"));
+    line1->set(2, progressBars);
 
-    auto space = std::make_shared<basicText>("   ");
-
-    auto title = std::make_shared<sameLine>();
-    title->setTo(0, image);
-    title->setTo(1, space);
-    title->setTo(2, std::make_shared<basicImage>(bigChar('C')));
-    title->setTo(3, space);
-    title->setTo(4, std::make_shared<basicImage>(bigChar('G')));
-    title->setTo(5, space);
-    title->setTo(6, std::make_shared<basicImage>(bigChar('U')));
-    title->setTo(7, space);
-    title->setTo(8, std::make_shared<basicImage>(bigChar('I')));
-    title->setTo(9, space);
-    title->setTo(10, image);
-
-    auto line1 = std::make_shared<sameLine>();
-    line1->setTo(0, multiLine);
-    line1->setTo(1, progressBar);
-
-    p.setTo({ 0, 0 }, title);
-    p.setTo({ 1, 0 }, line1);
+    page p;
+    p.set({ 0, 0 }, title);
+    p.set({ 1, 0 }, line1);
     p.update();
     while (!progressBar->isDone()) {
         std::this_thread::sleep_for(500ms);
         progressBar->updateProgress(progressBar->getProgress() + 10);
+        progressBar1->updateProgress(progressBar1->getProgress() + 10);
+        progressBar2->updateProgress(progressBar2->getProgress() + 10);
         p.update();
     }
     return 0;

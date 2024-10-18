@@ -1,6 +1,6 @@
-#include <cgui/components/sameLine.h>
+#include <cgui/components/hContainer.h>
 
-size_t sameLine::getWidth() const
+size_t hContainer::getWidth() const
 {
     size_t ret = 0;
     for (auto&& [_, c] : components) {
@@ -9,12 +9,16 @@ size_t sameLine::getWidth() const
     return ret;
 }
 
-size_t sameLine::getHeight() const
+size_t hContainer::getHeight() const
 {
-    return lineHeight;
+    size_t ret = 0;
+    for (auto&& [_, c] : components) {
+        ret = std::max(ret, c->getHeight());
+    }
+    return ret;
 }
 
-std::vector<cgui::string> sameLine::getData() const
+std::vector<cgui::string> hContainer::getData() const
 {
     std::vector<cgui::string> lines(getHeight() + 1);
     for (auto&& [_, c] : components) {
@@ -25,15 +29,24 @@ std::vector<cgui::string> sameLine::getData() const
         for (size_t i = 0; i < height; ++i) {
             lines[i] += data[i] + cgui::string(width - data[i].length(), ' ');
         }
-        for (size_t i = height; i < lineHeight; ++i) {
+        for (size_t i = height; i < getHeight(); ++i) {
             lines[i] += cgui::string(width, ' ');
         }
     }
     return lines;
 }
 
-void sameLine::setTo(int col, std::shared_ptr<component> src)
+void hContainer::set(int col, std::shared_ptr<component> src)
 {
     components[col] = src;
-    lineHeight = std::max(lineHeight, src->getHeight());
+}
+
+void hContainer::erase(int col)
+{
+    components.erase(col);
+}
+
+void hContainer::clear()
+{
+    components.clear();
 }

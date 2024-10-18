@@ -21,9 +21,11 @@ cmake -B build
 ```
 
 ## API 介绍
-````mermaid 
+```mermaid 
 graph LR
     subgraph utils
+        direction LR
+        pos
         string
     end
     utils --> components
@@ -34,10 +36,16 @@ graph LR
         component --> basicProgressBar
         component --> basicText
         component --> multiLineText
-        component --> singleLine
+        component --> container
+        
+        subgraph container
+            direction LR
+            hContainer
+            tContainer
+            vContainer
+        end
     end
 
     components --> page
-    logicPos --> page
-````
+```
 更详细的介绍可以去看一看`sandbox/demo.cpp`，里面对于每种功能几乎都有测试，风格应该也还算简单易懂
