@@ -1,33 +1,32 @@
 #pragma once
-#include "components/component.h"
-#include "logicPos.h"
+#include "components/tContainer.h"
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
 
-class page // : public component
+class page
 {
 public:
-    size_t getWeight() const;
+    size_t getWidth() const;
     size_t getHeight() const;
     std::vector<cgui::string> getData() const;
 
     // 把page中的内容格式化为字符串
-    std::string toString();
+    std::string toString() const;
 
     // 打印page
-    void update();
+    void update() const;
 
     // 把某个控件放到...
-    void setTo(logicPos pos, std::shared_ptr<component> src);
+    void set(cgui::logicPos pos, std::shared_ptr<component> src);
 
     // 删除某个控件
-    void erase(logicPos pos);
+    void erase(cgui::logicPos pos);
 
     // 清空控件
     void clear();
 
 private:
-    std::map<logicPos, std::shared_ptr<component>> components;
+    tContainer table;
 };

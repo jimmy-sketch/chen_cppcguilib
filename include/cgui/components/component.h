@@ -6,6 +6,10 @@
 /*
 * 所有组件的基类
 * 
+* getWidth  组件最大宽度
+* getHeight 组件最大高度
+* getData   组件的格式化数据
+* 
 */
 
 class component
