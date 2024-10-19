@@ -8,7 +8,6 @@ project(cgui
 set(CMAKE_CXX_STANDARD 20)
 
 add_library(CGUI
-    thirdparty/wtswidth.h
     include/cgui/components/basicImage.h
     include/cgui/components/basicProgressBar.h
     include/cgui/components/basicText.h
