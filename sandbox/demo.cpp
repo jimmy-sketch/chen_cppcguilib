@@ -26,7 +26,6 @@ static std::vector<cgui::string> getImageByLines(std::string_view imageFile) {
             }
             line += " ";
         }
-        line.pushBackDefaultRGB();
         lines.push_back(line);
     }
     stbi_image_free(pixels);
