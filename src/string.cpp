@@ -1,5 +1,5 @@
 #include <cgui/utils/string.h>
-#include <regex>
+#include <cgui/utils/config.h>
 #include <wtswidth.h>
 
 static const std::string defaultColor = "\x1b[0m";
@@ -49,13 +49,13 @@ void cgui::string::pushBack(char other)
     append(string(1, other));
 }
 
-void cgui::string::insert(int pos, const string& other)
+void cgui::string::insert(size_t pos, const string& other)
 {
     str.insert(pos, other.str.substr(0, other.pushBackPos()));
     visibleLength += other.visibleLength;
 }
 
-void cgui::string::insert(int pos, int count, char c)
+void cgui::string::insert(size_t pos, int count, char c)
 {
     insert(pos, string(count, c));
 }
@@ -66,14 +66,30 @@ void cgui::string::appendDirectly(const string& other)
     visibleLength += other.visibleLength;
 }
 
+cgui::string cgui::string::take(size_t n) {
+    cgui::string ret;
+    for (size_t i = 0; i < str.size(); ++i) {
+        ret += str[i];
+        if (str[i] == '\x1b') {
+            for (++i; i < str.size(); ++i) {
+                ret += str[i];
+                if (str[i] == 'm') {
+                    break;
+                }
+            }
+        }
+        ret.calculateVisibleLength();
+        if (ret.length() == n) {
+            return ret;
+        }
+    }
+    ret.append(string(n - ret.length(), cgui::paddingChar));
+    return ret;
+}
+
 void cgui::string::pushBackDefaultRGB() 
 {
     append(defaultColor.data());
-}
-
-void cgui::string::insertDefaultRGB(int pos)
-{
-    insert(pos, defaultColor.data());
 }
 
 void cgui::string::pushBackRGB(int r, int g, int b) 
@@ -81,17 +97,22 @@ void cgui::string::pushBackRGB(int r, int g, int b)
     append(colorAnsiEscapeCode(38, r, g, b).data());
 }
 
-void cgui::string::insertRGB(int pos, int r, int g, int b) 
-{
-    insert(pos, colorAnsiEscapeCode(38, r, g, b).data());
-}
-
 void cgui::string::pushBackBackgroundRGB(int r, int g, int b)
 {
     append(colorAnsiEscapeCode(48, r, g, b).data());
 }
 
-void cgui::string::insertBackgroundRGB(int pos, int r, int g, int b)
+void cgui::string::insertDefaultRGB(size_t pos)
+{
+    insert(pos, defaultColor.data());
+}
+
+void cgui::string::insertRGB(size_t pos, int r, int g, int b)
+{
+    insert(pos, colorAnsiEscapeCode(38, r, g, b).data());
+}
+
+void cgui::string::insertBackgroundRGB(size_t pos, int r, int g, int b)
 {
     insert(pos, colorAnsiEscapeCode(48, r, g, b).data());
 }
@@ -142,12 +163,20 @@ void cgui::string::calculateVisibleLength()
 {
     visibleLength = 0;
     // 不能有\n \t
-    for (auto& c : str) {
-        if (c == '\n' || c == '\t') { c = ' '; }
+    // 移除ANSI序列
+    std::string cleanLine = "";
+    for (size_t i = 0; i < str.size(); ++i) {
+        if (str[i] == '\n' || str[i] == '\t') { str[i] = ' '; }
+        else if (str[i] == '\x1b') {
+            for (++i; i < str.size(); ++i) {
+                if (str[i] == 'm') {
+                    break;
+                }
+            }
+            continue;
+        }
+        cleanLine += str[i];
     }
-    // 移除ANSI转义序列
-    std::regex ansiEscape(R"(\x1B\[[0-9;]*[A-Za-z])");
-    std::string cleanLine = std::regex_replace(str, ansiEscape, "");
     // 处理unicode字符
     if (!cleanLine.empty()) {
         visibleLength = wts8width(cleanLine.data(), cleanLine.size());

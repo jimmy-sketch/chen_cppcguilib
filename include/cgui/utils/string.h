@@ -23,19 +23,23 @@ public:
     // 追加一个字符
     void pushBack(char other);
     // 插入字符串，会移除结尾的“恢复默认颜色”
-    void insert(int pos, const string& other);
+    void insert(size_t pos, const string& other);
     // 插入一个字符
-    void insert(int pos, int count, char c);
+    void insert(size_t pos, int count, char c);
     // 追加字符串，不会移除结尾的“恢复默认颜色”
     void appendDirectly(const string& other);
+    // 从头开始，获取一个宽度为n的子字符串
+    // 如果结尾正好是某个Unicode符号的前半截，会得到<?>符号
+    string take(size_t n);
 
-    // 插入/添加颜色
+    // 追加颜色
     void pushBackDefaultRGB();
-    void insertDefaultRGB(int pos);
     void pushBackRGB(int r, int g, int b);
-    void insertRGB(int pos, int r, int g, int b);
     void pushBackBackgroundRGB(int r, int g, int b);
-    void insertBackgroundRGB(int pos, int r, int g, int b);
+    // 插入颜色
+    void insertDefaultRGB(size_t pos);
+    void insertRGB(size_t pos, int r, int g, int b);
+    void insertBackgroundRGB(size_t pos, int r, int g, int b);
     
     // 与append相同，会移除结尾的“恢复默认颜色”
     string operator+(const string& other);

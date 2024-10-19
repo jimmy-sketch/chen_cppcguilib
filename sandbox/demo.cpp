@@ -99,13 +99,19 @@ int main() {
     p.set({ 0, 0 }, title);
     p.set({ 1, 0 }, line1);
     p.update();
-    while (!progressBar->isDone()) {
-        std::this_thread::sleep_for(500ms);
-        progressBar->updateProgress(progressBar->getProgress() + 10);
-        progressBar1->updateProgress(progressBar1->getProgress() + 10);
-        progressBar2->updateProgress(progressBar2->getProgress() + 10);
-        progressBar3->updateProgress(progressBar3->getProgress() + 10);
-        p.update();
+    while (true) {
+        while (!progressBar->isDone()) {
+            std::this_thread::sleep_for(500ms);
+            progressBar->updateProgress(progressBar->getProgress() + 10);
+            progressBar1->updateProgress(progressBar1->getProgress() + 10);
+            progressBar2->updateProgress(progressBar2->getProgress() + 10);
+            progressBar3->updateProgress(progressBar3->getProgress() + 10);
+            p.update();
+        }
+        progressBar->updateProgress(0);
+        progressBar1->updateProgress(0);
+        progressBar2->updateProgress(0);
+        progressBar3->updateProgress(0);
     }
     return 0;
 }
