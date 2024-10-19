@@ -10,7 +10,7 @@
 #include <unistd.h>     // for STDOUT_FILENO
 #endif
 
-static int termainalWidth() {
+static int terminalWidth() {
 #ifdef _WIN32
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi)) {
@@ -24,7 +24,7 @@ static int termainalWidth() {
 #endif
 }
 
-static int termainalHeight() {
+static int terminalHeight() {
 #ifdef _WIN32
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi)) {
@@ -35,6 +35,14 @@ static int termainalHeight() {
     winsize w{};
     const int status = ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
     return w.ws_row;
+#endif
+}
+
+static void terminalClear() {
+#ifdef _WIN32
+    system("cls");
+#else
+    system("clear");
 #endif
 }
 
@@ -62,18 +70,32 @@ std::string page::toString() const
     return ret;
 }
 
+static int oldWidth = 0;
+static int oldHeight = 0;
 void page::update() const
 {
-    std::cout << "\x1B[?25l\x1B[0;0H";
+    int tWidth = terminalWidth();
+    int tHeight = terminalHeight();
+    if (oldWidth != tWidth || oldHeight != tHeight) {
+        terminalClear();
+        oldWidth = tWidth;
+        oldHeight = tHeight;
+    }
+
     std::string buffer = "";
-    for (auto& line : getData()) {
-        buffer += line.take(termainalWidth()).data();
-        buffer += "\n";
+    auto data = getData();
+    for (int i = 0; i < tHeight; ++i) {
+        if (i < getHeight()) {
+            buffer += std::string(data[i].take(tWidth).data());
+        }
+        else {
+            buffer += std::string(tWidth, cgui::paddingChar);
+        }
+        if (i + getHeight() < tHeight) {
+            buffer += '\n';
+        }
     }
-    for (int i = 1; i + getHeight() < termainalHeight(); ++i) {
-        buffer += std::string(termainalWidth(), cgui::paddingChar);
-    }
-    std::cout << buffer;
+    std::cout << "\x1B[?25l\x1B[0;0H" << buffer;
 }
 
 void page::set(cgui::logicPos pos, std::shared_ptr<component> src)
