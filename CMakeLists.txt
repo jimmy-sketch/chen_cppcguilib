@@ -1,13 +1,14 @@
 cmake_minimum_required(VERSION 3.12)
 
 project(cgui
-    LANGUAGES CXX
+    LANGUAGES CXX C
     VERSION 1.0.0
 )
 
 set(CMAKE_CXX_STANDARD 20)
 
 add_library(CGUI
+    thirdparty/wtswidth.h
     include/cgui/components/basicImage.h
     include/cgui/components/basicProgressBar.h
     include/cgui/components/basicText.h
@@ -21,6 +22,7 @@ add_library(CGUI
     include/cgui/utils/string.h
     include/cgui/page.h
     include/cgui/cgui.h
+    thirdparty/src/wtswidth.c
     src/basicImage.cpp
     src/basicProgressBar.cpp
     src/basicText.cpp
@@ -34,6 +36,7 @@ add_library(CGUI
 
 target_include_directories(CGUI PUBLIC
     include/
+    thirdparty/
 )
 
 add_subdirectory(sandbox)

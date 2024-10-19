@@ -19,12 +19,12 @@ static std::vector<cgui::string> getImageByLines(std::string_view imageFile) {
             int i = (y * width + x) * channels;
             int r = pixels[i], g = pixels[i + 1], b = pixels[i + 2], a = pixels[i + 3];
             if (a < 128) {
-                line.pushBackDefaultRGB();
+                line += "  ";
             }
             else {
-                line.pushBackBackgroundRGB(r, g, b);
+                line.pushBackRGB(r, g, b);
+                line += "██";
             }
-            line += " ";
         }
         lines.push_back(line);
     }

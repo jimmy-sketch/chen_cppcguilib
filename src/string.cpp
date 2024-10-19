@@ -1,5 +1,6 @@
 #include <cgui/utils/string.h>
 #include <regex>
+#include <wtswidth.h>
 
 static const std::string defaultColor = "\x1b[0m";
 
@@ -148,8 +149,12 @@ void cgui::string::calculateVisibleLength()
     std::regex ansiEscape(R"(\x1B\[[0-9;]*[A-Za-z])");
     std::string cleanLine = std::regex_replace(str, ansiEscape, "");
     // 处理unicode字符
-    // todo
-    visibleLength = cleanLine.size();
+    if (!cleanLine.empty()) {
+        visibleLength = wts8width(cleanLine.data(), cleanLine.size());
+    }
+    else {
+        visibleLength = 0;
+    }
 }
 
 std::string cgui::string::colorAnsiEscapeCode(int mod, int r, int g, int b)
