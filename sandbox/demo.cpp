@@ -73,12 +73,11 @@ int main() {
     title->set(7, space);
     title->set(8, std::make_shared<basicImage>(bigChar('I')));
     title->set(9, space);
-    title->set(10, image);
     
     auto progressBar = std::make_shared<basicProgressBar>(10, 0);
-    auto progressBar1 = std::make_shared<basicProgressBar>(10, 1);
-    auto progressBar2 = std::make_shared<basicProgressBar>(10, 2);
-    auto progressBar3 = std::make_shared<basicProgressBar>(10, 2);
+    auto progressBar1 = std::make_shared<basicProgressBar>(15, 1);
+    auto progressBar2 = std::make_shared<basicProgressBar>(20, 2);
+    auto progressBar3 = std::make_shared<basicProgressBar>(25, 2);
     auto progressBars = std::make_shared<vContainer>();
     progressBars->set(0, progressBar);
     progressBars->set(1, progressBar1);
@@ -95,23 +94,26 @@ int main() {
     line1->set(1, std::make_shared<basicText>("progress bars:"));
     line1->set(2, progressBars);
 
+    auto dev1 = std::make_shared<vContainer>();
+    dev1->set(0, title);
+    dev1->set(1, line1);
+
     page p;
-    p.set({ 0, 0 }, title);
-    p.set({ 1, 0 }, line1);
-    p.update();
+    p.set({ 0, 0 }, dev1);
+    p.set({ 0, 1 }, image);
     while (true) {
-        while (!progressBar->isDone()) {
-            std::this_thread::sleep_for(500ms);
-            progressBar->updateProgress(progressBar->getProgress() + 10);
-            progressBar1->updateProgress(progressBar1->getProgress() + 10);
-            progressBar2->updateProgress(progressBar2->getProgress() + 10);
-            progressBar3->updateProgress(progressBar3->getProgress() + 10);
-            p.update();
+        p.update();
+        std::this_thread::sleep_for(500ms);
+        progressBar->updateProgress(progressBar->getProgress() + 10);
+        progressBar1->updateProgress(progressBar1->getProgress() + 10);
+        progressBar2->updateProgress(progressBar2->getProgress() + 10);
+        progressBar3->updateProgress(progressBar3->getProgress() + 10);
+        if (progressBar->isDone()) {
+            progressBar->updateProgress(0);
+            progressBar1->updateProgress(0);
+            progressBar2->updateProgress(0);
+            progressBar3->updateProgress(0);
         }
-        progressBar->updateProgress(0);
-        progressBar1->updateProgress(0);
-        progressBar2->updateProgress(0);
-        progressBar3->updateProgress(0);
     }
     return 0;
 }

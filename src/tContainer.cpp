@@ -3,18 +3,26 @@
 
 size_t tContainer::getWidth() const
 {
+    std::map<int, size_t> lineWidthList;
+    for (auto& [p, c] : components) {
+        lineWidthList[p.col] = std::max(lineWidthList[p.col], c->getWidth());
+    }
     size_t ret = 0;
-    for (auto&& [_, c] : components) {
-        ret += c->getWidth();
+    for (auto&& [_, w] : lineWidthList) {
+        ret += w;
     }
     return ret;
 }
 
 size_t tContainer::getHeight() const
 {
+    std::map<int, size_t> lineHeightList;
+    for (auto& [p, c] : components) {
+        lineHeightList[p.row] = std::max(lineHeightList[p.row], c->getHeight());
+    }
     size_t ret = 0;
-    for (auto&& [_, c] : components) {
-        ret += c->getHeight();
+    for (auto&& [_, h] : lineHeightList) {
+        ret += h;
     }
     return ret;
 }
