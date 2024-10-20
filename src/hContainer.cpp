@@ -4,7 +4,7 @@
 size_t hContainer::getWidth() const
 {
     size_t ret = 0;
-    for (auto&& [_, c] : components) {
+    for (auto&& c : components) {
         ret += c->getWidth();
     }
     return ret;
@@ -13,7 +13,7 @@ size_t hContainer::getWidth() const
 size_t hContainer::getHeight() const
 {
     size_t ret = 0;
-    for (auto&& [_, c] : components) {
+    for (auto&& c : components) {
         ret = std::max(ret, c->getHeight());
     }
     return ret;
@@ -22,7 +22,7 @@ size_t hContainer::getHeight() const
 std::vector<cgui::string> hContainer::getData() const
 {
     std::vector<cgui::string> lines(getHeight() + 1);
-    for (auto&& [_, c] : components) {
+    for (auto&& c : components) {
         size_t height = c->getHeight();
         size_t width = c->getWidth();
         auto data = c->getData();
@@ -38,17 +38,33 @@ std::vector<cgui::string> hContainer::getData() const
     return lines;
 }
 
-void hContainer::set(int col, std::shared_ptr<component> src)
-{
-    components[col] = src;
+hContainer::hContainer(std::initializer_list<std::shared_ptr<component>> initList) {
+    for (auto& component : initList) {
+        components.push_back(component);
+    }
 }
 
-void hContainer::erase(int col)
-{
-    components.erase(col);
+void hContainer::pushBack(std::shared_ptr<component> src) {
+    components.push_back(src);
 }
 
-void hContainer::clear()
-{
+void hContainer::insert(size_t index, std::shared_ptr<component> src) {
+    if (index <= components.size()) {
+        components.insert(components.begin() + index, src);
+    }
+}
+
+void hContainer::erase(size_t index) {
+    if (index < components.size()) {
+        components.erase(components.begin() + index);
+    }
+}
+
+void hContainer::clear() {
     components.clear();
+}
+
+std::shared_ptr<component>& hContainer::operator[](size_t index)
+{
+    return components[index];
 }

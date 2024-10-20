@@ -62,41 +62,45 @@ int main() {
 
     auto image = std::make_shared<basicImage>(getImageByLines("../../asserts/textures/apple.png"));
     auto space = std::make_shared<basicText>("   ");
-    auto title = std::make_shared<hContainer>();
-    title->set(0, image);
-    title->set(1, space);
-    title->set(2, std::make_shared<basicImage>(bigChar('C')));
-    title->set(3, space);
-    title->set(4, std::make_shared<basicImage>(bigChar('G')));
-    title->set(5, space);
-    title->set(6, std::make_shared<basicImage>(bigChar('U')));
-    title->set(7, space);
-    title->set(8, std::make_shared<basicImage>(bigChar('I')));
-    title->set(9, space);
+    auto title = std::make_shared<hContainer>(hContainer{
+        image, 
+        space,
+        std::make_shared<basicImage>(bigChar('C')),
+        space,
+        std::make_shared<basicImage>(bigChar('G')),
+        space,
+        std::make_shared<basicImage>(bigChar('U')),
+        space,
+        std::make_shared<basicImage>(bigChar('I')),
+        space
+        });
     
     auto progressBar = std::make_shared<basicProgressBar>(10, 0);
     auto progressBar1 = std::make_shared<basicProgressBar>(15, 1);
     auto progressBar2 = std::make_shared<basicProgressBar>(20, 2);
     auto progressBar3 = std::make_shared<basicProgressBar>(25, 2);
-    auto progressBars = std::make_shared<vContainer>();
-    progressBars->set(0, progressBar);
-    progressBars->set(1, progressBar1);
-    progressBars->set(2, progressBar2);
-    progressBars->set(3, progressBar3);
+    auto progressBars = std::make_shared<vContainer>(vContainer{
+        progressBar,
+        progressBar1,
+        progressBar2,
+        progressBar3
+        });
 
     std::vector<cgui::string> multiText = { "Red Red Red","Green Green Green","Blue Blue Blue" };
     multiText[0].insertRGB(0, 255, 0, 0);
     multiText[1].insertRGB(0, 0, 255, 0);
     multiText[2].insertRGB(0, 0, 0, 255);
     auto multiLine = std::make_shared<multiLineText>(multiText);
-    auto line1 = std::make_shared<hContainer>();
-    line1->set(0, multiLine);
-    line1->set(1, std::make_shared<basicText>("progress bars:"));
-    line1->set(2, progressBars);
+    auto line1 = std::make_shared<hContainer>(hContainer{ 
+        multiLine,
+        std::make_shared<basicText>("progress bars:"),
+        progressBars
+        });
 
-    auto dev1 = std::make_shared<vContainer>();
-    dev1->set(0, title);
-    dev1->set(1, line1);
+    auto dev1 = std::make_shared<vContainer>(vContainer{
+        title,
+        line1
+        });
 
     page p;
     p.set({ 0, 0 }, dev1);
