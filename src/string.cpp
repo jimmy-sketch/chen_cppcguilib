@@ -87,6 +87,46 @@ cgui::string cgui::string::take(size_t n) {
     return ret;
 }
 
+static int utf8CharLength(unsigned char firstByte) {
+    if ((firstByte & 0x80) == 0x00) return 1;
+    else if ((firstByte & 0xE0) == 0xC0) return 2;
+    else if ((firstByte & 0xF0) == 0xE0) return 3;
+    else if ((firstByte & 0xF8) == 0xF0) return 4;
+    else return 0;
+}
+
+cgui::string cgui::string::takeComplete(size_t n)
+{
+    cgui::string ret;
+    size_t visibleLength = 0;
+    for (size_t i = 0; i < str.size(); ++i) {
+        ret += str[i];
+        if (str[i] == '\x1b') {
+            for (++i; i < str.size(); ++i) {
+                ret += str[i];
+                if (str[i] == 'm') {
+                    break;
+                }
+            }
+        }
+        else {
+            int utf8Len = utf8CharLength(str[i]);
+            for (int j = 1; j < utf8Len; ++j, ++i) {
+                ret += str[i + 1];
+            }
+            visibleLength++;
+            if (visibleLength == n) {
+                while ((i + 1) < str.size() && (str[i + 1] & 0xC0) == 0x80) {
+                    ret += str[++i];
+                }
+                return ret;
+            }
+        }
+    }
+    ret.append(string(n - visibleLength, cgui::getPaddingChar()));
+    return ret;
+}
+
 void cgui::string::pushBackDefaultRGB() 
 {
     append(defaultColor.data());

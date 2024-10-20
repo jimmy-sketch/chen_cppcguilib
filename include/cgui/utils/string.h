@@ -31,6 +31,9 @@ public:
     // 从头开始，获取一个宽度为n的子字符串
     // 如果结尾正好是某个Unicode符号的前半截，会得到<?>符号
     string take(size_t n);
+    // 从头开始，获取一个宽度为n的子字符串
+    // 如果结尾正好是某个Unicode符号的前半截，会补全这个符号，尽管这样会超过n
+    string takeComplete(size_t n);
 
     // 追加颜色
     void pushBackDefaultRGB();
