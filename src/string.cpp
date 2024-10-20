@@ -83,7 +83,7 @@ cgui::string cgui::string::take(size_t n) {
             return ret;
         }
     }
-    ret.append(string(n - ret.length(), cgui::paddingChar));
+    ret.append(string(n - ret.length(), cgui::getPaddingChar()));
     return ret;
 }
 

@@ -89,7 +89,7 @@ void page::update() const
             buffer += std::string(data[i].take(tWidth).data());
         }
         else {
-            buffer += std::string(tWidth, cgui::paddingChar);
+            buffer += std::string(tWidth, cgui::getPaddingChar());
         }
         if (i + getHeight() < tHeight) {
             buffer += '\n';

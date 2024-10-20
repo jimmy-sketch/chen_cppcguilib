@@ -36,7 +36,7 @@ std::vector<cgui::string> vContainer::getData() const
 
         for (size_t i = 0; i < height; ++i) {
             lines[yOffset + i].appendDirectly(data[i]);
-            lines[yOffset + i] += cgui::string(getWidth() - data[i].length(), cgui::paddingChar);
+            lines[yOffset + i] += cgui::string(getWidth() - data[i].length(), cgui::getPaddingChar());
         }
     }
     return lines;

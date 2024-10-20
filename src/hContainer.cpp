@@ -29,10 +29,10 @@ std::vector<cgui::string> hContainer::getData() const
 
         for (size_t i = 0; i < height; ++i) {
             lines[i].appendDirectly(data[i]);
-            lines[i] += cgui::string(width - data[i].length(), cgui::paddingChar);
+            lines[i] += cgui::string(width - data[i].length(), cgui::getPaddingChar());
         }
         for (size_t i = height; i < getHeight(); ++i) {
-            lines[i] += cgui::string(width, cgui::paddingChar);
+            lines[i] += cgui::string(width, cgui::getPaddingChar());
         }
     }
     return lines;

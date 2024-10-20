@@ -25,6 +25,7 @@ add_library(CGUI
     src/basicImage.cpp
     src/basicProgressBar.cpp
     src/basicText.cpp
+    src/config.cpp
     src/hContainer.cpp
     src/multiLineText.cpp
     src/page.cpp
