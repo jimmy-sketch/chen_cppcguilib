@@ -1,87 +1,36 @@
 #include <cgui/utils/string.h>
-#include <regex>
+#include <cgui/utils/config.h>
+#include <wtswidth.h>
 
-using namespace cgui;
+static const std::string defaultColor = "\x1b[0m";
 
-static const std::string defaultColor = "\033[0m";
+cgui::string::string()
+    : str(defaultColor)
+{}
 
-string::string() {}
-string::string(const char* in) : str(in) { calculateVisibleLength(); }
-string::string(std::string_view in) : str(in) { calculateVisibleLength(); }
-string::string(size_t count, char c) : str(count, c) { calculateVisibleLength(); }
-
-size_t string::size() const { return str.size(); }
-size_t string::length() const { return visibleLength; }
-
-void string::insert(int pos, const string& other) {
-    str.insert(pos, other.str);
-    visibleLength += other.visibleLength;
-}
-void string::insert(int pos, int count, char c) {
-    str.insert(pos, count, c);
-}
-
-void string::pushBackDefaultRGB() {
-    str.insert(pushBackPos(), defaultColor);
-}
-void cgui::string::insertDefaultRGB(int pos)
+cgui::string::string(const char* in) 
+    : str(in) 
 {
-    str.insert(pos, defaultColor);
-}
-void string::pushBackRGB(int r, int g, int b) {
-    str.insert(pushBackPos(), "\x1b[38;2;" + std::to_string(r) + ";" + std::to_string(g) + ";" + std::to_string(b) + "m");
-    ++colorCount;
-    if (colorCount == 1) { str += defaultColor; }
-}
-void string::insertRGB(int pos, int r, int g, int b) {
-    str.insert(pos, "\x1b[38;2;" + std::to_string(r) + ";" + std::to_string(g) + ";" + std::to_string(b) + "m");
-    ++colorCount;
-    if (colorCount == 1) { str += defaultColor; }
-}
-void cgui::string::pushBackBackgroundRGB(int r, int g, int b)
-{
-    str.insert(pushBackPos(), "\x1b[48;2;" + std::to_string(r) + ";" + std::to_string(g) + ";" + std::to_string(b) + "m");
-    ++colorCount;
-    if (colorCount == 1) { str += defaultColor; }
-}
-void cgui::string::insertBackgroundRGB(int pos, int r, int g, int b)
-{
-    str.insert(pos, "\x1b[48;2;" + std::to_string(r) + ";" + std::to_string(g) + ";" + std::to_string(b) + "m");
-    ++colorCount;
-    if (colorCount == 1) { str += defaultColor; }
-}
-
-string& string::operator+(const string& other) {
-    str.insert(pushBackPos(), other.str);
-    visibleLength += other.visibleLength;
-    return *this;
-}
-string& cgui::string::operator+(char other)
-{
-    str.insert(pushBackPos(), 1, other);
-    visibleLength += 1;
-    return *this;
-}
-void string::operator+=(const string& other) {
-    str.insert(pushBackPos(), other.str);
-    visibleLength += other.visibleLength;
-}
-void cgui::string::operator+=(char other)
-{
-    str.insert(pushBackPos(), 1, other);
-    visibleLength += 1;
-}
-
-void cgui::string::operator=(const string& other)
-{
-    str = other.str;
-    visibleLength = other.visibleLength;
-}
-
-void cgui::string::operator=(std::string_view other)
-{
-    str = other;
+    str += defaultColor;
     calculateVisibleLength();
+}
+
+cgui::string::string(std::string_view in) 
+    : string(in.data()) 
+{}
+
+cgui::string::string(size_t count, char c) 
+    : string(std::string(count, c).data())
+{}
+
+size_t cgui::string::size() const 
+{ 
+    return str.size();
+}
+
+size_t cgui::string::length() const 
+{ 
+    return visibleLength; 
 }
 
 const char* cgui::string::data() const
@@ -89,36 +38,205 @@ const char* cgui::string::data() const
     return str.data();
 }
 
+void cgui::string::append(const string& other)
+{
+    str.insert(pushBackPos(), other.str.substr(0, other.pushBackPos()));
+    visibleLength += other.visibleLength;
+}
+
+void cgui::string::pushBack(char other)
+{
+    append(string(1, other));
+}
+
+void cgui::string::insert(size_t pos, const string& other)
+{
+    str.insert(pos, other.str.substr(0, other.pushBackPos()));
+    visibleLength += other.visibleLength;
+}
+
+void cgui::string::insert(size_t pos, int count, char c)
+{
+    insert(pos, string(count, c));
+}
+
+void cgui::string::appendDirectly(const string& other)
+{
+    str.insert(pushBackPos(), other.str);
+    visibleLength += other.visibleLength;
+}
+
+cgui::string cgui::string::take(size_t n) {
+    cgui::string ret;
+    for (size_t i = 0; i < str.size(); ++i) {
+        ret += str[i];
+        if (str[i] == '\x1b') {
+            for (++i; i < str.size(); ++i) {
+                ret += str[i];
+                if (str[i] == 'm') {
+                    break;
+                }
+            }
+        }
+        ret.calculateVisibleLength();
+        if (ret.length() == n) {
+            return ret;
+        }
+    }
+    ret.append(string(n - ret.length(), cgui::getPaddingChar()));
+    return ret;
+}
+
+static int utf8CharLength(unsigned char firstByte) {
+    if ((firstByte & 0x80) == 0x00) return 1;
+    else if ((firstByte & 0xE0) == 0xC0) return 2;
+    else if ((firstByte & 0xF0) == 0xE0) return 3;
+    else if ((firstByte & 0xF8) == 0xF0) return 4;
+    else return 0;
+}
+
+cgui::string cgui::string::takeComplete(size_t n)
+{
+    cgui::string ret;
+    size_t visibleLength = 0;
+    for (size_t i = 0; i < str.size(); ++i) {
+        ret += str[i];
+        if (str[i] == '\x1b') {
+            for (++i; i < str.size(); ++i) {
+                ret += str[i];
+                if (str[i] == 'm') {
+                    break;
+                }
+            }
+        }
+        else {
+            int utf8Len = utf8CharLength(str[i]);
+            for (int j = 1; j < utf8Len; ++j, ++i) {
+                ret += str[i + 1];
+            }
+            visibleLength++;
+            if (visibleLength == n) {
+                while ((i + 1) < str.size() && (str[i + 1] & 0xC0) == 0x80) {
+                    ret += str[++i];
+                }
+                return ret;
+            }
+        }
+    }
+    ret.append(string(n - visibleLength, cgui::getPaddingChar()));
+    return ret;
+}
+
+void cgui::string::pushBackDefaultRGB() 
+{
+    append(defaultColor.data());
+}
+
+void cgui::string::pushBackRGB(int r, int g, int b) 
+{
+    append(colorAnsiEscapeCode(38, r, g, b).data());
+}
+
+void cgui::string::pushBackBackgroundRGB(int r, int g, int b)
+{
+    append(colorAnsiEscapeCode(48, r, g, b).data());
+}
+
+void cgui::string::insertDefaultRGB(size_t pos)
+{
+    insert(pos, defaultColor.data());
+}
+
+void cgui::string::insertRGB(size_t pos, int r, int g, int b)
+{
+    insert(pos, colorAnsiEscapeCode(38, r, g, b).data());
+}
+
+void cgui::string::insertBackgroundRGB(size_t pos, int r, int g, int b)
+{
+    insert(pos, colorAnsiEscapeCode(48, r, g, b).data());
+}
+
+cgui::string cgui::string::operator+(const string& other)
+{
+    string ret = *this;
+    ret.append(other);
+    return ret;
+}
+
+cgui::string cgui::string::operator+(char other)
+{
+    string ret = *this;
+    ret.pushBack(other);
+    return ret;
+}
+
+cgui::string& cgui::string::operator+=(const string& other) {
+    append(other);
+    return *this;
+}
+
+cgui::string& cgui::string::operator+=(char other)
+{
+    pushBack(other);
+    return *this;
+}
+
+cgui::string& cgui::string::operator=(const string& other)
+{
+    str = other.str;
+    visibleLength = other.visibleLength;
+    return *this;
+}
+
+cgui::string& cgui::string::operator=(std::string_view other)
+{
+    return operator=(string(other));
+}
+
 size_t cgui::string::pushBackPos() const
 {
-    if (colorCount == 0) {
-        return str.end() - str.begin();
+     return str.end() - str.begin() - defaultColor.size();
+}
+
+void cgui::string::calculateVisibleLength()
+{
+    visibleLength = 0;
+    // 不能有\n \t
+    // 移除ANSI序列
+    std::string cleanLine = "";
+    for (size_t i = 0; i < str.size(); ++i) {
+        if (str[i] == '\n' || str[i] == '\t') { str[i] = ' '; }
+        else if (str[i] == '\x1b') {
+            for (++i; i < str.size(); ++i) {
+                if (str[i] == 'm') {
+                    break;
+                }
+            }
+            continue;
+        }
+        cleanLine += str[i];
+    }
+    // 处理unicode字符
+    if (!cleanLine.empty()) {
+        visibleLength = wts8width(cleanLine.data(), cleanLine.size());
     }
     else {
-        return str.end() - str.begin() - defaultColor.size();
+        visibleLength = 0;
     }
 }
 
-void string::calculateVisibleLength() {
-    visibleLength = 0;
-    // 不能有换行符
-    for (auto& c : str) {
-        if (c == '\n') { c = ' '; }
-    }
-    // 移除ANSI转义序列
-    std::regex ansiEscape(R"(\x1B\[[0-9;]*[A-Za-z])");
-    std::string cleanLine = std::regex_replace(str, ansiEscape, "");
-    // 处理unicode字符
-    // todo
-    visibleLength = cleanLine.size();
+std::string cgui::string::colorAnsiEscapeCode(int mod, int r, int g, int b)
+{
+    return "\x1b[" + std::to_string(mod) + ";2;" + std::to_string(r) + ";" + std::to_string(g) + ";" + std::to_string(b) + "m";
 }
 
-string cgui::operator+(std::string_view lhs, string& rhs)
+cgui::string cgui::operator+(std::string_view lhs, string& rhs)
 {
     return string(lhs) + rhs;
 }
 
-string cgui::operator+(std::string_view lhs, string&& rhs)
+cgui::string cgui::operator+(std::string_view lhs, string&& rhs)
 {
     return string(lhs) + rhs;
 }
