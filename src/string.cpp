@@ -64,6 +64,7 @@ cgui::string::string(const char* in)
     : bytes(in)
 {
     bytes += defaultColor;
+    removeBadChar();
     calculateWidth();
 }
 
@@ -237,6 +238,15 @@ cgui::string::iterator cgui::string::end()
 size_t cgui::string::pushBackPos() const
 {
      return bytes.end() - bytes.begin() - defaultColor.size();
+}
+
+void cgui::string::removeBadChar()
+{
+    for (auto& byte : bytes) {
+        if (byte == '\n' || byte == '\t') {
+            byte = ' ';
+        }
+    }
 }
 
 void cgui::string::calculateWidth()

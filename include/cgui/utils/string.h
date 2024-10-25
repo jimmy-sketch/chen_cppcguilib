@@ -82,6 +82,8 @@ private:
 
     // 返回末尾的“恢复默认颜色”的前面一个位置
     size_t pushBackPos() const;
+    // 移除\n \t
+    void removeBadChar();
     // 计算可见字符的宽度
     void calculateWidth();
     // rgb转换为ANSI转义序列
