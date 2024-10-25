@@ -120,17 +120,19 @@ void cgui::string::appendDirectly(const string& other)
 
 cgui::string cgui::string::take(size_t n) {
     auto it = begin();
+    auto last = it;
     size_t currentWidth = 0;
     for (; (currentWidth < n) && (it != end()); ++it) {
+        last = it;
         currentWidth += charWidth(it);
     }
     if (currentWidth == n) {
         return { std::string(begin().p, it.p).data() };
     }
     else if (currentWidth > n) {
-        currentWidth -= charWidth(it);
+        currentWidth -= charWidth(last);
     }
-    std::string ret(begin().p, it.p);
+    std::string ret(begin().p, last.p);
     ret += std::string(n - currentWidth, cgui::getPaddingChar());
     return { ret.data() };
 }
@@ -138,14 +140,19 @@ cgui::string cgui::string::take(size_t n) {
 cgui::string cgui::string::takeComplete(size_t n)
 {
     auto it = begin();
+    auto last = it;
     size_t currentWidth = 0;
     for (; (currentWidth < n) && (it != end()); ++it) {
+        last = it;
         currentWidth += charWidth(it);
     }
-    if (currentWidth >= n) {
+    if (currentWidth == n) {
         return { std::string(begin().p, it.p).data() };
     }
-    std::string ret(begin().p, it.p);
+    else if (currentWidth > n) {
+        currentWidth -= charWidth(last);
+    }
+    std::string ret(begin().p, last.p);
     ret += std::string(n - currentWidth, cgui::getPaddingChar());
     return { ret.data() };
 }
