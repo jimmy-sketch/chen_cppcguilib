@@ -133,11 +133,8 @@ cgui::string cgui::string::takeComplete(size_t n)
         last = it;
         currentWidth += charWidth(it);
     }
-    if (currentWidth == n) {
+    if (currentWidth >= n) {
         return { std::string(begin().p, it.p).data() };
-    }
-    else if (currentWidth > n) {
-        currentWidth -= charWidth(last);
     }
     std::string ret(begin().p, last.p);
     ret += std::string(n - currentWidth, cgui::getPaddingChar());
