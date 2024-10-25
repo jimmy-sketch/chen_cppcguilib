@@ -60,51 +60,50 @@ static void initFont() {
 int main() {
     initFont();
 
-    auto image = std::make_shared<basicImage>(getImageByLines("../../asserts/textures/apple.png"));
     auto space = std::make_shared<basicText>("   ");
-    auto title = std::make_shared<hContainer>(hContainer{
-        image, 
-        space,
-        std::make_shared<basicImage>(bigChar('C')),
-        space,
-        std::make_shared<basicImage>(bigChar('G')),
-        space,
-        std::make_shared<basicImage>(bigChar('U')),
-        space,
-        std::make_shared<basicImage>(bigChar('I')),
-        space
-        });
-    
     auto progressBar = std::make_shared<basicProgressBar>(10, 0);
     auto progressBar1 = std::make_shared<basicProgressBar>(15, 1);
     auto progressBar2 = std::make_shared<basicProgressBar>(20, 2);
     auto progressBar3 = std::make_shared<basicProgressBar>(25, 2);
-    auto progressBars = std::make_shared<vContainer>(vContainer{
-        progressBar,
-        progressBar1,
-        progressBar2,
-        progressBar3
-        });
-
-    std::vector<cgui::string> multiText = { "Red Red Red","Green Green Green","Blue Blue Blue" };
+    std::vector<cgui::string> multiText = { 
+        "CGUI是跨平台的控制台UI库",
+        "CGUI支持UTF8字符：あ감ڠ😊⨌",
+        "CGUI支持彩色字符"
+    };
     multiText[0].insertRGB(0, 255, 0, 0);
     multiText[1].insertRGB(0, 0, 255, 0);
     multiText[2].insertRGB(0, 0, 0, 255);
-    auto multiLine = std::make_shared<multiLineText>(multiText);
-    auto line1 = std::make_shared<hContainer>(hContainer{ 
-        multiLine,
-        std::make_shared<basicText>("progress bars:"),
-        progressBars
-        });
-
-    auto dev1 = std::make_shared<vContainer>(vContainer{
-        title,
-        line1
-        });
 
     page p;
-    p.set({ 0, 0 }, dev1);
-    p.set({ 0, 1 }, image);
+    p.set({ 0, 0 }, 
+        std::make_shared<vContainer>(vContainer{
+            std::make_shared<hContainer>(hContainer{
+                std::make_shared<basicImage>(getImageByLines("../../asserts/textures/diamond_sword.png")),
+                space,
+                std::make_shared<basicImage>(bigChar('C')),
+                space,
+                std::make_shared<basicImage>(bigChar('G')),
+                space,
+                std::make_shared<basicImage>(bigChar('U')),
+                space,
+                std::make_shared<basicImage>(bigChar('I')),
+                space
+            }),
+            std::make_shared<hContainer>(hContainer{
+                std::make_shared<basicText>("progress bars:"),
+                std::make_shared<vContainer>(vContainer{
+                    progressBar,
+                    progressBar1,
+                    progressBar2,
+                    progressBar3
+                })
+            })
+        }));
+    p.set({ 0, 1 }, std::make_shared<vContainer>(vContainer{
+        std::make_shared<multiLineText>(multiText),
+        std::make_shared<basicImage>(getImageByLines("../../asserts/textures/apple.png"))
+        }));
+
     while (true) {
         p.update();
         std::this_thread::sleep_for(500ms);

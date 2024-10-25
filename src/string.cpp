@@ -4,15 +4,54 @@
 
 static const std::string defaultColor = "\x1b[0m";
 
+static size_t utf8CharSize(char firstByte) {
+    if ((firstByte & 0x80) == 0x00) return 1;
+    else if ((firstByte & 0xE0) == 0xC0) return 2;
+    else if ((firstByte & 0xF0) == 0xE0) return 3;
+    else if ((firstByte & 0xF8) == 0xF0) return 4;
+    else return 0;
+}
+
+static size_t charSize(const char* src) {
+    if (!src) {
+        return 0;
+    }
+    if (src[0] == '\x1b') {
+        size_t ret = 1;
+        for (; src[ret] != 0; ++ret) {
+            if (src[ret] == 'm') {
+                return ret + 1;
+            }
+        }
+        return ret;
+    }
+    size_t ret = 0;
+    for (; (ret < utf8CharSize(src[0])) && (src[ret] != 0 && src[ret] != '\x1b'); ++ret);
+    return ret;
+}
+
+static size_t charWidth(const char* src) {
+    if (!src) {
+        return 0;
+    }
+    if (src[0] == '\x1b') {
+        return 0;
+    }
+    size_t ret = 0;
+    for (; (ret < utf8CharSize(src[0])) && (src[ret] != 0 && src[ret] != '\x1b'); ++ret);
+    return wts8width(src, ret);
+}
+
 cgui::string::string()
-    : str(defaultColor)
+    : bytes(defaultColor)
 {}
 
 cgui::string::string(const char* in) 
-    : str(in) 
+    : bytes(in)
 {
-    str += defaultColor;
-    calculateVisibleLength();
+    bytes += defaultColor;
+    removeBadChar();
+    calculateWidth();
 }
 
 cgui::string::string(std::string_view in) 
@@ -25,23 +64,23 @@ cgui::string::string(size_t count, char c)
 
 size_t cgui::string::size() const 
 { 
-    return str.size();
+    return bytes.size();
 }
 
 size_t cgui::string::length() const 
 { 
-    return visibleLength; 
+    return width; 
 }
 
 const char* cgui::string::data() const
 {
-    return str.data();
+    return bytes.data();
 }
 
 void cgui::string::append(const string& other)
 {
-    str.insert(pushBackPos(), other.str.substr(0, other.pushBackPos()));
-    visibleLength += other.visibleLength;
+    bytes.insert(pushBackPos(), other.bytes.substr(0, other.pushBackPos()));
+    width += other.width;
 }
 
 void cgui::string::pushBack(char other)
@@ -51,8 +90,8 @@ void cgui::string::pushBack(char other)
 
 void cgui::string::insert(size_t pos, const string& other)
 {
-    str.insert(pos, other.str.substr(0, other.pushBackPos()));
-    visibleLength += other.visibleLength;
+    bytes.insert(pos, other.bytes.substr(0, other.pushBackPos()));
+    width += other.width;
 }
 
 void cgui::string::insert(size_t pos, int count, char c)
@@ -62,69 +101,44 @@ void cgui::string::insert(size_t pos, int count, char c)
 
 void cgui::string::appendDirectly(const string& other)
 {
-    str.insert(pushBackPos(), other.str);
-    visibleLength += other.visibleLength;
+    bytes.insert(pushBackPos(), other.bytes);
+    width += other.width;
 }
 
 cgui::string cgui::string::take(size_t n) {
-    cgui::string ret;
-    for (size_t i = 0; i < str.size(); ++i) {
-        ret += str[i];
-        if (str[i] == '\x1b') {
-            for (++i; i < str.size(); ++i) {
-                ret += str[i];
-                if (str[i] == 'm') {
-                    break;
-                }
-            }
-        }
-        ret.calculateVisibleLength();
-        if (ret.length() == n) {
-            return ret;
-        }
+    auto it = begin();
+    auto last = it;
+    size_t currentWidth = 0;
+    for (; (currentWidth < n) && (it != end()); ++it) {
+        last = it;
+        currentWidth += charWidth(it);
     }
-    ret.append(string(n - ret.length(), cgui::getPaddingChar()));
-    return ret;
-}
-
-static int utf8CharLength(unsigned char firstByte) {
-    if ((firstByte & 0x80) == 0x00) return 1;
-    else if ((firstByte & 0xE0) == 0xC0) return 2;
-    else if ((firstByte & 0xF0) == 0xE0) return 3;
-    else if ((firstByte & 0xF8) == 0xF0) return 4;
-    else return 0;
+    if (currentWidth == n) {
+        return { std::string(begin().p, it.p).data() };
+    }
+    else if (currentWidth > n) {
+        currentWidth -= charWidth(last);
+    }
+    std::string ret(begin().p, last.p);
+    ret += std::string(n - currentWidth, cgui::getPaddingChar());
+    return { ret.data() };
 }
 
 cgui::string cgui::string::takeComplete(size_t n)
 {
-    cgui::string ret;
-    size_t visibleLength = 0;
-    for (size_t i = 0; i < str.size(); ++i) {
-        ret += str[i];
-        if (str[i] == '\x1b') {
-            for (++i; i < str.size(); ++i) {
-                ret += str[i];
-                if (str[i] == 'm') {
-                    break;
-                }
-            }
-        }
-        else {
-            int utf8Len = utf8CharLength(str[i]);
-            for (int j = 1; j < utf8Len; ++j, ++i) {
-                ret += str[i + 1];
-            }
-            visibleLength++;
-            if (visibleLength == n) {
-                while ((i + 1) < str.size() && (str[i + 1] & 0xC0) == 0x80) {
-                    ret += str[++i];
-                }
-                return ret;
-            }
-        }
+    auto it = begin();
+    auto last = it;
+    size_t currentWidth = 0;
+    for (; (currentWidth < n) && (it != end()); ++it) {
+        last = it;
+        currentWidth += charWidth(it);
     }
-    ret.append(string(n - visibleLength, cgui::getPaddingChar()));
-    return ret;
+    if (currentWidth >= n) {
+        return { std::string(begin().p, it.p).data() };
+    }
+    std::string ret(begin().p, last.p);
+    ret += std::string(n - currentWidth, cgui::getPaddingChar());
+    return { ret.data() };
 }
 
 void cgui::string::pushBackDefaultRGB() 
@@ -184,8 +198,8 @@ cgui::string& cgui::string::operator+=(char other)
 
 cgui::string& cgui::string::operator=(const string& other)
 {
-    str = other.str;
-    visibleLength = other.visibleLength;
+    bytes = other.bytes;
+    width = other.width;
     return *this;
 }
 
@@ -194,35 +208,35 @@ cgui::string& cgui::string::operator=(std::string_view other)
     return operator=(string(other));
 }
 
-size_t cgui::string::pushBackPos() const
+cgui::string::iterator cgui::string::begin()
 {
-     return str.end() - str.begin() - defaultColor.size();
+    return { bytes.data() };
 }
 
-void cgui::string::calculateVisibleLength()
+cgui::string::iterator cgui::string::end()
 {
-    visibleLength = 0;
-    // 不能有\n \t
-    // 移除ANSI序列
-    std::string cleanLine = "";
-    for (size_t i = 0; i < str.size(); ++i) {
-        if (str[i] == '\n' || str[i] == '\t') { str[i] = ' '; }
-        else if (str[i] == '\x1b') {
-            for (++i; i < str.size(); ++i) {
-                if (str[i] == 'm') {
-                    break;
-                }
-            }
-            continue;
+    return { bytes.data() + bytes.size() };
+}
+
+size_t cgui::string::pushBackPos() const
+{
+     return bytes.end() - bytes.begin() - defaultColor.size();
+}
+
+void cgui::string::removeBadChar()
+{
+    for (auto& byte : bytes) {
+        if (byte == '\n' || byte == '\t') {
+            byte = ' ';
         }
-        cleanLine += str[i];
     }
-    // 处理unicode字符
-    if (!cleanLine.empty()) {
-        visibleLength = wts8width(cleanLine.data(), cleanLine.size());
-    }
-    else {
-        visibleLength = 0;
+}
+
+void cgui::string::calculateWidth()
+{
+    width = 0;
+    for (auto c : *this) {
+        width += charWidth(c);
     }
 }
 
@@ -239,4 +253,25 @@ cgui::string cgui::operator+(std::string_view lhs, string& rhs)
 cgui::string cgui::operator+(std::string_view lhs, string&& rhs)
 {
     return string(lhs) + rhs;
+}
+
+cgui::string::iterator& cgui::string::iterator::operator++()
+{
+    p += charSize(p);
+    return *this;
+}
+
+bool cgui::string::iterator::operator==(const iterator& other) const
+{
+    return p == other.p;
+}
+
+char* cgui::string::iterator::operator*() const
+{
+    return p;
+}
+
+cgui::string::iterator::operator char* ()
+{
+    return p;
 }

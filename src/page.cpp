@@ -95,7 +95,7 @@ void page::update() const
             buffer += '\n';
         }
     }
-    std::cout << "\x1B[?25l\x1B[0;0H" << buffer;
+    printf("\x1B[?25l\x1B[0;0H%s", buffer.data());
 }
 
 void page::set(cgui::logicPos pos, std::shared_ptr<component> src)

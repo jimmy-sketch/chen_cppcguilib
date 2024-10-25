@@ -53,14 +53,28 @@ public:
     string& operator=(const string& other);
     string& operator=(std::string_view other);
 
+    // 迭代器
+    struct iterator {
+        iterator& operator++();
+        bool operator==(const iterator& other) const;
+        char* operator*() const;
+        operator char* ();
+
+        char* p; // => cgui::string::bytes
+    };
+    iterator begin();
+    iterator end();
+
 private:
-    std::string str;
-    size_t visibleLength = 0;
+    std::string bytes;
+    size_t width = 0;
 
     // 返回末尾的“恢复默认颜色”的前面一个位置
     size_t pushBackPos() const;
+    // 移除\n \t
+    void removeBadChar();
     // 计算可见字符的宽度
-    void calculateVisibleLength();
+    void calculateWidth();
     // rgb转换为ANSI转义序列
     std::string colorAnsiEscapeCode(int mod, int r, int g, int b);
 };
