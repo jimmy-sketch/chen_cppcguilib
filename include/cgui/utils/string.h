@@ -3,6 +3,17 @@
 
 namespace cgui {
 
+struct Char {
+    // 读取src首个Utf8字符 / ANSI颜色转义序列
+    Char(const char* src);
+    // Char的字节数
+    size_t getSize() const;
+    // Char的宽度
+    size_t getWidth() const;
+
+    const char* p;
+};
+
 // 一个没有\n \t，结尾会自动添加“恢复默认颜色”的字符串
 class string {
 public:
@@ -53,14 +64,26 @@ public:
     string& operator=(const string& other);
     string& operator=(std::string_view other);
 
+    // 迭代器
+    struct iterator {
+        iterator& operator++();
+        bool operator==(const iterator& other) const;
+        Char operator*() const;
+        operator char* ();
+
+        char* p; // => cgui::string::bytes
+    };
+    iterator begin();
+    iterator end();
+
 private:
-    std::string str;
-    size_t visibleLength = 0;
+    std::string bytes;
+    size_t width = 0;
 
     // 返回末尾的“恢复默认颜色”的前面一个位置
     size_t pushBackPos() const;
     // 计算可见字符的宽度
-    void calculateVisibleLength();
+    void calculateWidth();
     // rgb转换为ANSI转义序列
     std::string colorAnsiEscapeCode(int mod, int r, int g, int b);
 };
