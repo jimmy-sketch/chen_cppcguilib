@@ -42,20 +42,6 @@ static size_t charWidth(const char* src) {
     return wts8width(src, ret);
 }
 
-cgui::Char::Char(const char* src)
-    : p(src)
-{}
-
-size_t cgui::Char::getSize() const
-{
-    return charSize(p);
-}
-
-size_t cgui::Char::getWidth() const
-{
-    return charWidth(p);
-}
-
 cgui::string::string()
     : bytes(defaultColor)
 {}
@@ -253,7 +239,7 @@ void cgui::string::calculateWidth()
 {
     width = 0;
     for (auto c : *this) {
-        width += c.getWidth();
+        width += charWidth(c);
     }
 }
 
@@ -283,9 +269,9 @@ bool cgui::string::iterator::operator==(const iterator& other) const
     return p == other.p;
 }
 
-cgui::Char cgui::string::iterator::operator*() const
+char* cgui::string::iterator::operator*() const
 {
-    return Char(p);
+    return p;
 }
 
 cgui::string::iterator::operator char* ()

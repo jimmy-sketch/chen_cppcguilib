@@ -3,17 +3,6 @@
 
 namespace cgui {
 
-struct Char {
-    // 读取src首个Utf8字符 / ANSI颜色转义序列
-    Char(const char* src);
-    // Char的字节数
-    size_t getSize() const;
-    // Char的宽度
-    size_t getWidth() const;
-
-    const char* p;
-};
-
 // 一个没有\n \t，结尾会自动添加“恢复默认颜色”的字符串
 class string {
 public:
@@ -68,7 +57,7 @@ public:
     struct iterator {
         iterator& operator++();
         bool operator==(const iterator& other) const;
-        Char operator*() const;
+        char* operator*() const;
         operator char* ();
 
         char* p; // => cgui::string::bytes
