@@ -2,6 +2,7 @@
 #include <thread>
 #include <iostream>
 #include <fstream>
+#include <csignal>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #define STB_TRUETYPE_IMPLEMENTATION
@@ -58,6 +59,10 @@ static void initFont() {
 }
 
 int main() {
+    signal(SIGINT, [](int s) {
+        printf("\x1B[?25h");
+        exit(0);
+        });
     initFont();
 
     auto space = std::make_shared<basicText>("   ");
