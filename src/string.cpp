@@ -4,7 +4,8 @@
 
 static const std::string defaultColor = "\x1b[0m";
 
-static size_t utf8CharSize(char firstByte) {
+static size_t utf8CharSize(char firstByte) 
+{
     if ((firstByte & 0x80) == 0x00) return 1;
     else if ((firstByte & 0xE0) == 0xC0) return 2;
     else if ((firstByte & 0xF0) == 0xE0) return 3;
@@ -12,7 +13,8 @@ static size_t utf8CharSize(char firstByte) {
     else return 0;
 }
 
-static size_t charSize(const char* src) {
+static size_t charSize(const char* src) 
+{
     if (!src) {
         return 0;
     }
@@ -30,7 +32,8 @@ static size_t charSize(const char* src) {
     return ret;
 }
 
-static size_t charWidth(const char* src) {
+static size_t charWidth(const char* src) 
+{
     if (!src) {
         return 0;
     }
@@ -62,17 +65,17 @@ cgui::string::string(size_t count, char c)
     : string(std::string(count, c).data())
 {}
 
-size_t cgui::string::size() const 
+size_t cgui::string::getSize() const
 { 
     return bytes.size();
 }
 
-size_t cgui::string::length() const 
+size_t cgui::string::getWidth() const
 { 
     return width; 
 }
 
-const char* cgui::string::data() const
+const char* cgui::string::getData() const
 {
     return bytes.data();
 }
@@ -105,39 +108,40 @@ void cgui::string::appendDirectly(const string& other)
     width += other.width;
 }
 
-cgui::string cgui::string::take(size_t n) {
-    auto it = begin();
-    auto last = it;
-    size_t currentWidth = 0;
-    for (; (currentWidth < n) && (it != end()); ++it) {
-        last = it;
-        currentWidth += charWidth(it);
-    }
-    if (currentWidth == n) {
-        return { std::string(begin().p, it.p).data() };
-    }
-    else if (currentWidth > n) {
-        currentWidth -= charWidth(last);
-    }
-    std::string ret(begin().p, last.p);
-    ret += std::string(n - currentWidth, cgui::getPaddingChar());
-    return { ret.data() };
-}
-
-cgui::string cgui::string::takeComplete(size_t n)
+cgui::string cgui::string::take(size_t w) const
 {
     auto it = begin();
     auto last = it;
     size_t currentWidth = 0;
-    for (; (currentWidth < n) && (it != end()); ++it) {
+    for (; (currentWidth < w) && (it != end()); ++it) {
         last = it;
         currentWidth += charWidth(it);
     }
-    if (currentWidth >= n) {
+    if (currentWidth == w) {
+        return { std::string(begin().p, it.p).data() };
+    }
+    else if (currentWidth > w) {
+        currentWidth -= charWidth(last);
+    }
+    std::string ret(begin().p, last.p);
+    ret += std::string(w - currentWidth, cgui::getPaddingChar());
+    return { ret.data() };
+}
+
+cgui::string cgui::string::takeComplete(size_t w) const
+{
+    auto it = begin();
+    auto last = it;
+    size_t currentWidth = 0;
+    for (; (currentWidth < w) && (it != end()); ++it) {
+        last = it;
+        currentWidth += charWidth(it);
+    }
+    if (currentWidth >= w) {
         return { std::string(begin().p, it.p).data() };
     }
     std::string ret(begin().p, last.p);
-    ret += std::string(n - currentWidth, cgui::getPaddingChar());
+    ret += std::string(w - currentWidth, cgui::getPaddingChar());
     return { ret.data() };
 }
 
@@ -218,6 +222,16 @@ cgui::string::iterator cgui::string::end()
     return { bytes.data() + bytes.size() };
 }
 
+cgui::string::constIterator cgui::string::begin() const
+{
+    return { bytes.data() };
+}
+
+cgui::string::constIterator cgui::string::end() const
+{
+    return { bytes.data() + bytes.size() };
+}
+
 size_t cgui::string::pushBackPos() const
 {
      return bytes.end() - bytes.begin() - defaultColor.size();
@@ -266,12 +280,33 @@ bool cgui::string::iterator::operator==(const iterator& other) const
     return p == other.p;
 }
 
-char* cgui::string::iterator::operator*() const
+char* cgui::string::iterator::operator*()
 {
     return p;
 }
 
 cgui::string::iterator::operator char* ()
+{
+    return p;
+}
+
+cgui::string::constIterator& cgui::string::constIterator::operator++()
+{
+    p += charSize(p);
+    return *this;
+}
+
+bool cgui::string::constIterator::operator==(const constIterator& other) const
+{
+    return p == other.p;
+}
+
+const char* cgui::string::constIterator::operator*() const
+{
+    return p;
+}
+
+cgui::string::constIterator::operator const char* () const
 {
     return p;
 }

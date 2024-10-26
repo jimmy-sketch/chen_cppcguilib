@@ -11,12 +11,12 @@ public:
     string(std::string_view in);
     string(size_t count, char c);
 
-    // 全部字符数量
-    size_t size() const;
-    // 可见字符的总宽度
-    size_t length() const;
+    // 字符串占用的字节数
+    size_t getSize() const;
+    // 字符串的宽度
+    size_t getWidth() const;
     // C风格字符串
-    const char* data() const;
+    const char* getData() const;
     
     // 追加字符串，会移除结尾的“恢复默认颜色”
     void append(const string& other);
@@ -29,11 +29,11 @@ public:
     // 追加字符串，不会移除结尾的“恢复默认颜色”
     void appendDirectly(const string& other);
     // 从头开始，获取一个宽度为n的子字符串
-    // 如果结尾正好是某个Unicode符号的前半截，会得到<?>符号
-    string take(size_t n);
+    // 如果宽度w处截断了某个UTF-8字符，会把这个字符转化为一些peddingChar，保证宽度w
+    string take(size_t w) const;
     // 从头开始，获取一个宽度为n的子字符串
-    // 如果结尾正好是某个Unicode符号的前半截，会补全这个符号，尽管这样会超过n
-    string takeComplete(size_t n);
+    // 如果宽度w处截断了某个UTF-8字符，会补全这个字符，尽管这样会超过宽度w
+    string takeComplete(size_t w) const;
 
     // 追加颜色
     void pushBackDefaultRGB();
@@ -57,13 +57,23 @@ public:
     struct iterator {
         iterator& operator++();
         bool operator==(const iterator& other) const;
-        char* operator*() const;
+        char* operator*();
         operator char* ();
 
         char* p; // => cgui::string::bytes
     };
+    struct constIterator {
+        constIterator& operator++();
+        bool operator==(const constIterator& other) const;
+        const char* operator*() const;
+        operator const char* () const;
+
+        const char* p; // => cgui::string::bytes
+    };
     iterator begin();
     iterator end();
+    constIterator begin() const;
+    constIterator end() const;
 
 private:
     std::string bytes;

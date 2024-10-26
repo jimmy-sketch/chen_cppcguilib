@@ -65,7 +65,7 @@ std::string page::toString() const
 {
     std::string ret = "";
     for (auto& line : getData()) {
-        ret += std::string(line.data()) + "\n";
+        ret += std::string(line.getData()) + "\n";
     }
     return ret;
 }
@@ -86,7 +86,7 @@ void page::update() const
     auto data = getData();
     for (int i = 0; i < tHeight; ++i) {
         if (i < getHeight()) {
-            buffer += std::string(data[i].take(tWidth).data());
+            buffer += std::string(data[i].take(tWidth).getData());
         }
         else {
             buffer += std::string(tWidth, cgui::getPaddingChar());

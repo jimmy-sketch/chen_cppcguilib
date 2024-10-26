@@ -21,7 +21,7 @@ size_t vContainer::getHeight() const
 
 std::vector<cgui::string> vContainer::getData() const
 {
-    std::vector<cgui::string> lines(getHeight() + 1);
+    std::vector<cgui::string> lines(getHeight());
     size_t row = 0;
     for (auto&& c : components) {
         size_t height = c->getHeight();
@@ -35,7 +35,7 @@ std::vector<cgui::string> vContainer::getData() const
 
         for (size_t i = 0; i < height; ++i) {
             lines[yOffset + i].appendDirectly(data[i]);
-            lines[yOffset + i] += cgui::string(getWidth() - data[i].length(), cgui::getPaddingChar());
+            lines[yOffset + i] += cgui::string(getWidth() - data[i].getWidth(), cgui::getPaddingChar());
         }
         row += 1;
     }
