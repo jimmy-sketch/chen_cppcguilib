@@ -75,9 +75,19 @@ int main() {
         "CGUI支持UTF8字符：あ감ڠ😊⨌",
         "CGUI支持彩色字符"
     };
-    multiText[0].insertRGB(0, 255, 0, 0);
-    multiText[1].insertRGB(0, 0, 255, 0);
-    multiText[2].insertRGB(0, 0, 0, 255);
+    multiText[0].setRGB(0, 255, 0, 0);
+    multiText[1].setRGB(0, 0, 255, 0);
+    // 彩虹色
+    multiText[2].setRGB(0, 255, 0, 0);
+    multiText[2].setRGB(1, 255, 165, 0);
+    multiText[2].setRGB(2, 255, 255, 0);
+    multiText[2].setRGB(3, 0, 255, 0);
+    multiText[2].setRGB(4, 0, 255, 255);
+    multiText[2].setRGB(5, 0, 0, 255);
+    multiText[2].setRGB(6, 238, 130, 238);
+    multiText[2].setRGB(7, 255, 0, 0);
+    multiText[2].setRGB(8, 255, 165, 0);
+    multiText[2].setRGB(9, 255, 255, 0);
 
     page p;
     p.set({ 0, 0 }, 

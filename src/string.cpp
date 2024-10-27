@@ -13,7 +13,7 @@ static size_t utf8CharSize(char firstByte)
     else return 0;
 }
 
-static size_t charSize(const char* src) 
+size_t cgui::charSize(const char* src)
 {
     if (!src) {
         return 0;
@@ -32,7 +32,7 @@ static size_t charSize(const char* src)
     return ret;
 }
 
-static size_t charWidth(const char* src) 
+size_t cgui::charWidth(const char* src) 
 {
     if (!src) {
         return 0;
@@ -54,7 +54,7 @@ cgui::string::string(const char* in)
 {
     bytes += defaultColor;
     removeBadChar();
-    calculateWidth();
+    calculateProperties();
 }
 
 cgui::string::string(std::string_view in) 
@@ -75,6 +75,16 @@ size_t cgui::string::getWidth() const
     return width; 
 }
 
+size_t cgui::string::getCount() const
+{
+    return count;
+}
+
+size_t cgui::string::getVisibleCharCount() const
+{
+    return visibleCharCount;
+}
+
 const char* cgui::string::getData() const
 {
     return bytes.data();
@@ -84,6 +94,8 @@ void cgui::string::append(const string& other)
 {
     bytes.insert(pushBackPos(), other.bytes.substr(0, other.pushBackPos()));
     width += other.width;
+    count += other.count;
+    visibleCharCount += other.visibleCharCount;
 }
 
 void cgui::string::pushBack(char other)
@@ -91,21 +103,42 @@ void cgui::string::pushBack(char other)
     append(string(1, other));
 }
 
-void cgui::string::insert(size_t pos, const string& other)
+void cgui::string::insert(size_t n, const string& other)
 {
+    if (n > visibleCharCount) {
+        return;
+    }
+
+    // 找到目标位置
+    size_t pos = 0;
+    {
+        // 找到第n个可见字符的位置
+        auto it = begin();
+        for (size_t i = 0; i < n; ) {
+            pos += charSize(it);
+            if (charWidth(it) != 0) {
+                ++i;
+            }
+            ++it;
+        }
+    }
     bytes.insert(pos, other.bytes.substr(0, other.pushBackPos()));
     width += other.width;
+    count += other.count;
+    visibleCharCount += other.visibleCharCount;
 }
 
-void cgui::string::insert(size_t pos, int count, char c)
+void cgui::string::insert(size_t n, char c)
 {
-    insert(pos, string(count, c));
+    insert(n, string(1, c));
 }
 
 void cgui::string::appendDirectly(const string& other)
 {
     bytes.insert(pushBackPos(), other.bytes);
     width += other.width;
+    count += other.count;
+    visibleCharCount += other.visibleCharCount;
 }
 
 cgui::string cgui::string::take(size_t w) const
@@ -160,19 +193,34 @@ void cgui::string::pushBackBackgroundRGB(int r, int g, int b)
     append(colorAnsiEscapeCode(48, r, g, b).data());
 }
 
-void cgui::string::insertDefaultRGB(size_t pos)
+void cgui::string::insertDefaultRGB(size_t n)
 {
-    insert(pos, defaultColor.data());
+    __insertRGB(n, defaultColor.data());
 }
 
-void cgui::string::insertRGB(size_t pos, int r, int g, int b)
+void cgui::string::insertRGB(size_t n, int r, int g, int b)
 {
-    insert(pos, colorAnsiEscapeCode(38, r, g, b).data());
+    __insertRGB(n, colorAnsiEscapeCode(38, r, g, b).data());
 }
 
-void cgui::string::insertBackgroundRGB(size_t pos, int r, int g, int b)
+void cgui::string::insertBackgroundRGB(size_t n, int r, int g, int b)
 {
-    insert(pos, colorAnsiEscapeCode(48, r, g, b).data());
+    __insertRGB(n, colorAnsiEscapeCode(48, r, g, b).data());
+}
+
+void cgui::string::setDefaultRGB(size_t n)
+{
+    __setRGB(n, defaultColor.data());
+}
+
+void cgui::string::setRGB(size_t n, int r, int g, int b)
+{
+    __setRGB(n, colorAnsiEscapeCode(38, r, g, b).data());
+}
+
+void cgui::string::setBackgroundRGB(size_t n, int r, int g, int b)
+{
+    __setRGB(n, colorAnsiEscapeCode(48, r, g, b).data());
 }
 
 cgui::string cgui::string::operator+(const string& other)
@@ -246,17 +294,93 @@ void cgui::string::removeBadChar()
     }
 }
 
-void cgui::string::calculateWidth()
+void cgui::string::calculateProperties()
 {
     width = 0;
+    count = 0;
+    visibleCharCount = 0;
     for (auto c : *this) {
-        width += charWidth(c);
+        auto cWidth = charWidth(c);
+        width += cWidth;
+        ++count;
+        if (cWidth != 0) {
+            ++visibleCharCount;
+        }
     }
 }
 
 std::string cgui::string::colorAnsiEscapeCode(int mod, int r, int g, int b)
 {
     return "\x1b[" + std::to_string(mod) + ";2;" + std::to_string(r) + ";" + std::to_string(g) + ";" + std::to_string(b) + "m";
+}
+
+void cgui::string::__insertRGB(size_t n, const string& other)
+{
+    if (n > visibleCharCount) {
+        return;
+    }
+
+    // 找到目标位置
+    size_t pos = 0;
+    {
+        // 找到第n个可见字符的位置
+        auto it = begin();
+        for (size_t i = 0; i < n; ) {
+            pos += charSize(it);
+            if (charWidth(it) != 0) {
+                ++i;
+            }
+            ++it;
+        }
+        // 跳过后面的彩色转义符
+        while (charWidth(it) == 0) {
+            pos += charSize(it);
+            ++it;
+        }
+    }
+    bytes.insert(pos, other.bytes.substr(0, other.pushBackPos()));
+    width += other.width;
+    count += other.count;
+    visibleCharCount += other.visibleCharCount;
+}
+
+void cgui::string::__setRGB(size_t n, const string& other)
+{
+    if (n > visibleCharCount) {
+        return;
+    }
+
+    // 找到目标位置
+    size_t pos = 0;
+    size_t clearBegin = 0;
+    size_t clearEnd = 0;
+    size_t clearCount = 0;
+    {
+        // 找到第n个可见字符的位置
+        auto it = begin();
+        for (size_t i = 0; i < n; ) {
+            pos += charSize(it);
+            if (charWidth(it) != 0) {
+                ++i;
+            }
+            ++it;
+        }
+        // 跳过后面的彩色转义符，稍后这些字符会被清理
+        clearBegin = pos;
+        while (charWidth(it) == 0) {
+            pos += charSize(it);
+            ++clearCount;
+            ++it;
+        }
+        clearEnd = pos;
+    }
+    bytes.insert(pos, other.bytes.substr(0, other.pushBackPos()));
+    if (clearBegin != clearEnd) {
+        bytes.erase(clearBegin, clearEnd);
+    }
+    width += other.width;
+    count += other.count - clearCount;
+    visibleCharCount += other.visibleCharCount;
 }
 
 cgui::string cgui::operator+(std::string_view lhs, string& rhs)
