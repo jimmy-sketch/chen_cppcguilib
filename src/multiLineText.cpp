@@ -1,9 +1,7 @@
 #include <cgui/components/multiLineText.h>
 
 multiLineText::multiLineText(std::vector<cgui::string> textByLine)
-{
-    this->textByLine = textByLine;
-}
+    : textByLine(textByLine) {}
 
 size_t multiLineText::getWidth() const
 {
@@ -27,4 +25,16 @@ std::vector<cgui::string> multiLineText::getData() const
 void multiLineText::setMultiText(std::vector<cgui::string> textByLine)
 {
     this->textByLine = textByLine;
+}
+
+void multiLineText::pushBack(const cgui::string& newLine) {
+    textByLine.push_back(newLine);
+}
+
+cgui::string& multiLineText::operator[](size_t index) {
+    return textByLine.at(index);
+}
+
+const cgui::string& multiLineText::operator[](size_t index) const {
+    return textByLine.at(index);
 }

@@ -65,29 +65,29 @@ int main() {
         });
     initFont();
 
+    // 彩虹色
+    constexpr int rainbowRad[] = { 255, 255, 255, 0, 0, 0, 238 };
+    constexpr int rainbowGreen[] = { 0, 165, 255, 255, 255, 0, 130 };
+    constexpr int rainbowBlue[] = { 0, 0, 0, 0, 255, 255, 238 };
+
     auto space = std::make_shared<basicText>("   ");
     auto progressBar = std::make_shared<basicProgressBar>(10, 0);
     auto progressBar1 = std::make_shared<basicProgressBar>(15, 1);
     auto progressBar2 = std::make_shared<basicProgressBar>(20, 2);
     auto progressBar3 = std::make_shared<basicProgressBar>(25, 2);
-    std::vector<cgui::string> multiText = { 
+    auto multiText = std::make_shared<multiLineText>(multiLineText({
         "CGUI是跨平台的控制台UI库",
         "CGUI支持UTF8字符：あ감ڠ😊⨌",
         "CGUI支持彩色字符",
-    };
-    multiText[0].setRGB(0, 255, 0, 0);
-    multiText[1].setRGB(0, 0, 255, 0);
-    // 彩虹色
-    int rainbowRad[] = { 255, 255, 255, 0, 0, 0, 238 };
-    int rainbowGreen[] = { 0, 165, 255, 255, 255, 0, 130 };
-    int rainbowBlue[] = { 0, 0, 0, 0, 255, 255, 238 };
-    size_t rainbowVisibleCount = multiText[2].getVisibleCharCount();
+        }));
+    (*multiText)[0].setRGB(0, 255, 0, 0);
+    (*multiText)[1].setRGB(0, 0, 255, 0);
+    size_t rainbowVisibleCount = (*multiText)[2].getVisibleCharCount();
     size_t rainbowOffset = 0;
     for (int i = 0; i < rainbowVisibleCount; ++i) {
         int j = (i + rainbowOffset) % 7;
-        multiText[2].setRGB(i, rainbowRad[j], rainbowGreen[j], rainbowBlue[j]);
+        (*multiText)[2].setRGB(i, rainbowRad[j], rainbowGreen[j], rainbowBlue[j]);
     }
-    auto multiTextComponet = std::make_shared<multiLineText>(multiText);
     
     page p;
     p.set({ 0, 0 }, 
@@ -115,13 +115,13 @@ int main() {
             })
         }));
     p.set({ 0, 1 }, std::make_shared<vContainer>(vContainer{
-        multiTextComponet,
+        multiText,
         std::make_shared<basicImage>(getImageByLines("../../asserts/textures/apple.png"))
         }));
 
     while (true) {
         p.update();
-        std::this_thread::sleep_for(500ms);
+        std::this_thread::sleep_for(200ms);
 
         progressBar->updateProgress(progressBar->getProgress() + 10);
         progressBar1->updateProgress(progressBar1->getProgress() + 10);
@@ -137,9 +137,8 @@ int main() {
         rainbowOffset += 1;
         for (int i = 0; i < rainbowVisibleCount; ++i) {
             int j = (i + rainbowOffset) % 7;
-            multiText[2].setRGB(i, rainbowRad[j], rainbowGreen[j], rainbowBlue[j]);
+            (*multiText)[2].setRGB(i, rainbowRad[j], rainbowGreen[j], rainbowBlue[j]);
         }
-        multiTextComponet->setMultiText(multiText);
     }
     return 0;
 }
