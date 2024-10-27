@@ -108,21 +108,15 @@ void cgui::string::insert(size_t n, const string& other)
     if (n > visibleCharCount) {
         return;
     }
-
-    // 找到目标位置
-    size_t pos = 0;
-    {
-        // 找到第n个可见字符的位置
-        auto it = begin();
-        for (size_t i = 0; i < n; ) {
-            pos += charSize(it);
-            if (charWidth(it) != 0) {
-                ++i;
-            }
-            ++it;
+    // 找到第n个可见字符的位置
+    auto it = begin();
+    for (size_t i = 0; i < n; ) {
+        if (charWidth(it) != 0) {
+            ++i;
         }
+        ++it;
     }
-    bytes.insert(pos, other.bytes.substr(0, other.pushBackPos()));
+    bytes.insert(it.p - begin(), other.bytes.substr(0, other.pushBackPos()));
     width += other.width;
     count += other.count;
     visibleCharCount += other.visibleCharCount;
@@ -139,6 +133,38 @@ void cgui::string::appendDirectly(const string& other)
     width += other.width;
     count += other.count;
     visibleCharCount += other.visibleCharCount;
+}
+
+void cgui::string::eraseDirectly(size_t index, size_t n)
+{
+    if (index > count || n == 0) {
+        return;
+    }
+    if (index + n > count) {
+        n = count - index;
+    }
+    size_t firstPos = 0;
+    size_t lastPos = 0;
+    // 找到first字符的位置
+    auto it = begin();
+    size_t i = 0;
+    for (; i < index; ) {
+        ++i;
+        ++it;
+    }
+    firstPos = it - begin();
+    // 找到last字符的位置
+    for (; i < index + n; ) {
+        if (charWidth(it) != 0) {
+            --visibleCharCount;
+        }
+        --count;
+        ++i;
+        ++it;
+    }
+    lastPos = it - begin();
+    // 清除
+    bytes.erase(firstPos, lastPos - firstPos);
 }
 
 cgui::string cgui::string::take(size_t w) const
@@ -319,26 +345,19 @@ void cgui::string::__insertRGB(size_t n, const string& other)
     if (n > visibleCharCount) {
         return;
     }
-
-    // 找到目标位置
-    size_t pos = 0;
-    {
-        // 找到第n个可见字符的位置
-        auto it = begin();
-        for (size_t i = 0; i < n; ) {
-            pos += charSize(it);
-            if (charWidth(it) != 0) {
-                ++i;
-            }
-            ++it;
+    // 找到第n个可见字符的位置
+    auto it = begin();
+    for (size_t i = 0; i < n; ) {
+        if (charWidth(it) != 0) {
+            ++i;
         }
-        // 跳过后面的彩色转义符
-        while (charWidth(it) == 0) {
-            pos += charSize(it);
-            ++it;
-        }
+        ++it;
     }
-    bytes.insert(pos, other.bytes.substr(0, other.pushBackPos()));
+    // 跳过后面的彩色转义符
+    while (charWidth(it) == 0) {
+        ++it;
+    }
+    bytes.insert(it - begin(), other.bytes.substr(0, other.pushBackPos()));
     width += other.width;
     count += other.count;
     visibleCharCount += other.visibleCharCount;
@@ -349,38 +368,28 @@ void cgui::string::__setRGB(size_t n, const string& other)
     if (n > visibleCharCount) {
         return;
     }
-
-    // 找到目标位置
-    size_t pos = 0;
-    size_t clearBegin = 0;
-    size_t clearEnd = 0;
-    size_t clearCount = 0;
-    {
-        // 找到第n个可见字符的位置
-        auto it = begin();
-        for (size_t i = 0; i < n; ) {
-            pos += charSize(it);
-            if (charWidth(it) != 0) {
-                ++i;
-            }
-            ++it;
+    // 找到第n个可见字符的位置
+    auto it = begin();
+    size_t eraseIndex = 0;
+    for (size_t i = 0; i < n; ) {
+        if (charWidth(it) != 0) {
+            ++i;
         }
-        // 跳过后面的彩色转义符，稍后这些字符会被清理
-        clearBegin = pos;
-        while (charWidth(it) == 0) {
-            pos += charSize(it);
-            ++clearCount;
-            ++it;
-        }
-        clearEnd = pos;
+        ++eraseIndex;
+        ++it;
     }
-    bytes.insert(pos, other.bytes.substr(0, other.pushBackPos()));
-    if (clearBegin != clearEnd) {
-        bytes.erase(clearBegin, clearEnd);
+    // 跳过后面的彩色转义符
+    size_t eraseCount = 0;
+    while (charWidth(it) == 0) {
+        ++eraseCount;
+        ++it;
     }
+    bytes.insert(it - begin(), other.bytes.substr(0, other.pushBackPos()));
     width += other.width;
-    count += other.count - clearCount;
+    count += other.count;
     visibleCharCount += other.visibleCharCount;
+    // 删除无用的彩色转义符
+    eraseDirectly(eraseIndex, eraseCount);
 }
 
 cgui::string cgui::operator+(std::string_view lhs, string& rhs)

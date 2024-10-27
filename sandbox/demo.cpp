@@ -73,22 +73,22 @@ int main() {
     std::vector<cgui::string> multiText = { 
         "CGUI是跨平台的控制台UI库",
         "CGUI支持UTF8字符：あ감ڠ😊⨌",
-        "CGUI支持彩色字符"
+        "CGUI支持彩色字符",
     };
     multiText[0].setRGB(0, 255, 0, 0);
     multiText[1].setRGB(0, 0, 255, 0);
     // 彩虹色
-    multiText[2].setRGB(0, 255, 0, 0);
-    multiText[2].setRGB(1, 255, 165, 0);
-    multiText[2].setRGB(2, 255, 255, 0);
-    multiText[2].setRGB(3, 0, 255, 0);
-    multiText[2].setRGB(4, 0, 255, 255);
-    multiText[2].setRGB(5, 0, 0, 255);
-    multiText[2].setRGB(6, 238, 130, 238);
-    multiText[2].setRGB(7, 255, 0, 0);
-    multiText[2].setRGB(8, 255, 165, 0);
-    multiText[2].setRGB(9, 255, 255, 0);
-
+    int rainbowRad[] = { 255, 255, 255, 0, 0, 0, 238 };
+    int rainbowGreen[] = { 0, 165, 255, 255, 255, 0, 130 };
+    int rainbowBlue[] = { 0, 0, 0, 0, 255, 255, 238 };
+    size_t rainbowVisibleCount = multiText[2].getVisibleCharCount();
+    size_t rainbowOffset = 0;
+    for (int i = 0; i < rainbowVisibleCount; ++i) {
+        int j = (i + rainbowOffset) % 7;
+        multiText[2].setRGB(i, rainbowRad[j], rainbowGreen[j], rainbowBlue[j]);
+    }
+    auto multiTextComponet = std::make_shared<multiLineText>(multiText);
+    
     page p;
     p.set({ 0, 0 }, 
         std::make_shared<vContainer>(vContainer{
@@ -115,13 +115,14 @@ int main() {
             })
         }));
     p.set({ 0, 1 }, std::make_shared<vContainer>(vContainer{
-        std::make_shared<multiLineText>(multiText),
+        multiTextComponet,
         std::make_shared<basicImage>(getImageByLines("../../asserts/textures/apple.png"))
         }));
 
     while (true) {
         p.update();
         std::this_thread::sleep_for(500ms);
+
         progressBar->updateProgress(progressBar->getProgress() + 10);
         progressBar1->updateProgress(progressBar1->getProgress() + 10);
         progressBar2->updateProgress(progressBar2->getProgress() + 10);
@@ -132,6 +133,13 @@ int main() {
             progressBar2->updateProgress(0);
             progressBar3->updateProgress(0);
         }
+
+        rainbowOffset += 1;
+        for (int i = 0; i < rainbowVisibleCount; ++i) {
+            int j = (i + rainbowOffset) % 7;
+            multiText[2].setRGB(i, rainbowRad[j], rainbowGreen[j], rainbowBlue[j]);
+        }
+        multiTextComponet->setMultiText(multiText);
     }
     return 0;
 }

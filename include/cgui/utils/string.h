@@ -35,8 +35,12 @@ public:
     void insert(size_t n, const string& other);
     // 在第n个可见字符前，插入一个字符
     void insert(size_t n, char c);
+    // 删除字符串中的可见字符
+    // void erase(size_t first, size_t last);
     // 追加字符串，插入的字符串不会移除结尾的“恢复默认颜色”
     void appendDirectly(const string& other);
+    // 删除字符串中的字符
+    void eraseDirectly(size_t index, size_t n);
     // 从头开始，获取一个宽度为n的子字符串
     // 如果宽度w处截断了某个UTF-8字符，会把这个字符转化为一些peddingChar，保证宽度w
     string take(size_t w) const;
