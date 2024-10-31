@@ -7,7 +7,7 @@ basicText::basicText(std::string_view str)
 
 size_t basicText::getWidth() const
 {
-	return text.length();
+	return text.getWidth();
 }
 
 size_t basicText::getHeight() const

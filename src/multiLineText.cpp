@@ -1,13 +1,15 @@
 #include <cgui/components/multiLineText.h>
 
 multiLineText::multiLineText(std::vector<cgui::string> textByLine)
-{
-    this->textByLine = textByLine;
-}
+    : textByLine(textByLine) {}
 
 size_t multiLineText::getWidth() const
 {
-    return calcuateLength();
+    size_t maxWidth = 0;
+    for (auto& line : textByLine) {
+        maxWidth = std::max(line.getWidth(), maxWidth);
+    }
+    return maxWidth;
 }
 
 size_t multiLineText::getHeight() const
@@ -25,11 +27,14 @@ void multiLineText::setMultiText(std::vector<cgui::string> textByLine)
     this->textByLine = textByLine;
 }
 
-size_t multiLineText::calcuateLength() const
-{
-    size_t maxLength = 0;
-    for (auto& line : textByLine) {
-        maxLength = std::max(line.length(), maxLength);
-    }
-    return maxLength;
+void multiLineText::pushBack(const cgui::string& newLine) {
+    textByLine.push_back(newLine);
+}
+
+cgui::string& multiLineText::operator[](size_t index) {
+    return textByLine.at(index);
+}
+
+const cgui::string& multiLineText::operator[](size_t index) const {
+    return textByLine.at(index);
 }

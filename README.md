@@ -1,4 +1,6 @@
 # 开源的命令行图形化库
+![sandbox.gif](sandbox.gif)
+
 本代码库旨在让开发者能够以一种简单的方式来在它们的命令行界面上放置一些简单控件，并摆脱对用Windows API等系统调用的依赖，以得到良好的跨平台效果
 目前，计划有以下功能：
 - [X] 支持UTF-8文本
@@ -33,18 +35,26 @@ graph LR
     utils --> components
 
     subgraph components
-        direction LR
-        component --> basicImage
-        component --> basicProgressBar
-        component --> basicText
-        component --> multiLineText
-        component --> container
+        direction TB
+        component --> basic-component
+        component --> layout-component
+        component --> interactive-component
         
-        subgraph container
+        subgraph basic-component
+            direction LR
+            basicImage
+            basicText
+            multiLineText
+        end
+        subgraph layout-component
             direction LR
             hContainer
             tContainer
             vContainer
+        end
+        subgraph interactive-component
+            direction LR
+            basicProgressBar
         end
     end
 

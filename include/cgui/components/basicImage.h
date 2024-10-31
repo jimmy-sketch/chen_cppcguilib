@@ -14,6 +14,4 @@ public:
 
 private:
     std::vector<cgui::string> image;
-    size_t width;
-    void calculateWidth();
 };
