@@ -9,8 +9,8 @@
 class page
 {
 public:
-    int32_t getWidth() const;
-    int32_t getHeight() const;
+    size_t getWidth() const;
+    size_t getHeight() const;
     void display();
 
     void set(int32_t x, int32_t y, int32_t z, std::shared_ptr<component> src);

@@ -43,12 +43,12 @@ static void terminalClear() {
 }
 #endif
 
-int32_t page::getWidth() const
+size_t page::getWidth() const
 {
     return _canvas.getWidth();
 }
 
-int32_t page::getHeight() const
+size_t page::getHeight() const
 {
     return _canvas.getHeight();
 }

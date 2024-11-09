@@ -44,11 +44,11 @@ graph LR
             direction LR
             basicImage
             basicText
+            canvas
             multiLineText
         end
         subgraph layout-component
             direction LR
-            canvas
             hContainer
             tContainer
             vContainer
