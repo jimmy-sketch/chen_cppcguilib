@@ -118,11 +118,12 @@ int main() {
         }));
     table->set({ 0, 1 },
         std::make_shared<vContainer>(vContainer{
-            multiText,
-            std::make_shared<basicImage>(getImageByLines("../../asserts/textures/apple.png"))
+            std::make_shared<basicImage>(getImageByLines("../../asserts/textures/apple.png")),
+            multiText
         }));
 
-    p.set(1, 1, 0, table);
+    p.set(53, 0, 0, std::make_shared<basicText>("<CGUI DEMO>"));
+    p.set(1, 2, 0, table);
 
     while (true) {
         p.display();
