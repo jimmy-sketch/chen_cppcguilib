@@ -22,6 +22,7 @@ add_library(CGUI
     include/cgui/utils/string.h
     include/cgui/page.h
     include/cgui/cgui.h
+    include/cgui/windowScreen.h
     thirdparty/src/wtswidth.c
     src/basicImage.cpp
     src/basicProgressBar.cpp
@@ -34,6 +35,7 @@ add_library(CGUI
     src/tContainer.cpp
     src/vContainer.cpp
     src/string.cpp
+    src/windowScreen.cpp
 )
 
 target_include_directories(CGUI PUBLIC
